@@ -7,25 +7,42 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.wartechwick.instasave.MainActivity;
 import com.wartechwick.instasave.PlayActivity;
 import com.wartechwick.instasave.R;
 import com.wartechwick.instasave.Sync.HttpClient;
 
+import java.io.File;
+
 /**
  * Created by penghaitao on 2015/12/22.
  */
 public class IntentUtils {
 
-    public static void shareImage(Uri uri, Context context) {
+    public static void shareImage(ImageView itemView, String filename, Context context) {
+        Uri uri = null;
+        File file = new File(Utils.getImageDirectory(context)+filename);
+        if (file.exists()) {
+            uri = Uri.fromFile(file);
+        } else {
+            uri = Utils.saveImage(itemView, filename, context);
+        }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/jpeg");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         context.startActivity(Intent.createChooser(intent, "Share image"));
     }
 
-    public static void setWallPaper(Uri uri, Context context) {
+    public static void setWallPaper(ImageView itemView, String filename, Context context) {
+        File file = new File(Utils.getImageDirectory(context)+filename);
+        Uri uri = null;
+        if (file.exists()) {
+            uri = Uri.fromFile(file);
+        } else {
+            uri = Utils.saveImage(itemView, filename, context);
+        }
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.setDataAndType(uri, "image/jpeg");
@@ -48,10 +65,9 @@ public class IntentUtils {
 
     public static void saveVideoOrShare(Activity context, String videoUrl, String filename, Boolean needShare) {
         Uri uri = HttpClient.loadVideo(videoUrl, filename, context);
+        IntentUtils.savetoAlbum(uri, context);
         if (needShare) {
             shareVideo(uri, context);
-        } else {
-            IntentUtils.savetoAlbum(uri, R.string.video_saved, context);
         }
     }
 
@@ -62,11 +78,10 @@ public class IntentUtils {
         context.startActivity(Intent.createChooser(intent, "Share video"));
     }
 
-    public static void savetoAlbum(Uri contentUri, int resId, Activity context) {
+    public static void savetoAlbum(Uri contentUri, Context context) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
         context.sendBroadcast(mediaScanIntent);
-        showSnackbar(resId, context);
     }
 
     public static void showSnackbar(int resId, Activity context) {

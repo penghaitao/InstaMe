@@ -11,7 +11,10 @@
     <string name="video_saved">Video has been saved! :)</string>
     <string name="image_saved_already">Image has been saved already, you can see it in your album</string>
     <string name="video_saved_already">Video has been saved already, you can see it in your album</string>
-    <string name="video_start_saving">Video start to download, please wait:)</string>
+    <string name="video_start_saving">Downloading...Please wait</string>
+    <string name="ok">OK</string>
+    <string name="cancel">cancel</string>
+    <string name="watch_demo">WATCH DEMO VIDEO</string>
 
     <string name="title_activity_play">PlayActivity</string>
     <string name="dummy_button">Dummy Button</string>

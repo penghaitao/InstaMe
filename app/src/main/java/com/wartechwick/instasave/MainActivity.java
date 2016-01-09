@@ -6,13 +6,10 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -36,7 +32,6 @@ import com.wartechwick.instasave.Utils.IntentUtils;
 import com.wartechwick.instasave.Utils.Utils;
 import com.wartechwick.instasave.db.Photo;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PhotoAdapter gramAdapter;
 
-    private Bitmap bitmap = null;
     String clipContent = null;
 
     // Storage Permissions
@@ -145,16 +139,13 @@ public class MainActivity extends AppCompatActivity {
                         share(position, itemView);
                         break;
                     case R.id.btn_wallpaper:
-                        wallpaper(itemView);
+                        wallpaper(position, itemView);
                         break;
                     case R.id.btn_delete:
                         delete(position);
                         break;
                     case R.id.insta_play:
-                        Photo gram = photoList.get(position);
-                        String[] urlBits = gram.getUrl().split("/");
-                        String filename = urlBits[urlBits.length-1]+".mp4";
-                        IntentUtils.playVideo(MainActivity.this, gram.getVideoUrl(), filename);
+                        play(position);
                         break;
                 }
             }
@@ -163,23 +154,33 @@ public class MainActivity extends AppCompatActivity {
         return listener;
     }
 
+    private String getFileName(int position) {
+        String filename = null;
+        Photo photo = photoList.get(position);
+        String[] urlBits = photo.getUrl().split("/");
+        String videoUrl = photo.getVideoUrl();
+        if (videoUrl == null) {
+            filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1] + ".jpg";
+        } else {
+            filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1] + ".mp4";
+        }
+        return filename;
+    }
+
     private void save(int position, ImageView itemView) {
         if (verifyStoragePermissions()) {
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
-            String[] urlBits = photo.getUrl().split("/");
+            String filename = getFileName(position);
+            File file = new File(Utils.getImageDirectory(this)+filename);
             if (videoUrl == null) {
-                String filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1] + ".jpg";
-                File file = new File(Utils.getImageDirectory(this)+filename);
                 if (!file.exists()) {
-                    bitmap = ((BitmapDrawable) itemView.getDrawable()).getBitmap();
-                    Utils.saveImage(bitmap, filename, MainActivity.this);
+                    Utils.saveImage(itemView, filename, this);
+                    IntentUtils.showSnackbar(R.string.image_saved, this);
                 } else {
                     IntentUtils.showSnackbar(R.string.image_saved_already, this);
                 }
             } else {
-                String filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1]+".mp4";
-                File file = new File(Utils.getImageDirectory(this)+filename);
                 if (!file.exists()) {
                     new SaveVideoTask(false).execute(videoUrl, filename);
                 } else {
@@ -191,15 +192,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void share(int position, ImageView itemView) {
         if (verifyStoragePermissions()) {
-            Photo gram = photoList.get(position);
-            String videoUrl = gram.getVideoUrl();
-            String[] urlBits = gram.getUrl().split("/");
+            Photo photo = photoList.get(position);
+            String videoUrl = photo.getVideoUrl();
+            String filename = getFileName(position);
             if (videoUrl == null) {
-                bitmap = ((BitmapDrawable) itemView.getDrawable()).getBitmap();
-                Uri uri = getImageUri();
-                IntentUtils.shareImage(uri, MainActivity.this);
+                IntentUtils.shareImage(itemView, filename, this);
             } else {
-                String filename = gram.getAuthorName() + "_"+ urlBits[urlBits.length-1]+".mp4";
                 File file = new File(Utils.getImageDirectory(this)+filename);
                 if (!file.exists()) {
                     new SaveVideoTask(true).execute(videoUrl, filename);
@@ -211,11 +209,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void wallpaper(ImageView itemView) {
+    private void wallpaper(int position, ImageView itemView) {
         if (verifyStoragePermissions()) {
-            bitmap = ((BitmapDrawable) itemView.getDrawable()).getBitmap();
-            Uri uri = getImageUri();
-            IntentUtils.setWallPaper(uri, MainActivity.this);
+            String filename = getFileName(position);
+            IntentUtils.setWallPaper(itemView, filename, MainActivity.this);
         }
     }
 
@@ -225,20 +222,19 @@ public class MainActivity extends AppCompatActivity {
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
         result.sort("time", Sort.DESCENDING);
-        Photo gram = result.get(position);
-        gram.removeFromRealm();
+        Photo photo = result.get(position);
+        photo.removeFromRealm();
         realm.commitTransaction();
         photoList.remove(position);
         gramAdapter.notifyItemRemoved(position);
         gramAdapter.notifyItemRangeChanged(position, gramAdapter.getItemCount());
     }
 
-    private Uri getImageUri() {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(MainActivity.this.getContentResolver(), bitmap, "Title", null);
-        Uri uri = Uri.parse(path);
-        return uri;
+    private void play(int position) {
+        Photo photo = photoList.get(position);
+        String[] urlBits = photo.getUrl().split("/");
+        String filename = urlBits[urlBits.length-1]+".mp4";
+        IntentUtils.playVideo(MainActivity.this, photo.getVideoUrl(), filename);
     }
 
     class SaveVideoTask extends AsyncTask<String, Integer, String> {
@@ -253,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progressBar = new ProgressDialog(MainActivity.this);
-            progressBar.setMessage("Downloading...Please wait");
+            progressBar.setMessage(getResources().getString(R.string.video_start_saving));
             progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
@@ -272,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             IntentUtils.saveVideoOrShare(MainActivity.this, params[0], params[1], needShare);
+            IntentUtils.showSnackbar(R.string.video_saved, MainActivity.this);
             return null;
         }
     }
@@ -295,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             if (gramAdapter != null) {
                 gramAdapter.notifyDataSetChanged();
-
             } else {
                 setupAdapter();
             }
@@ -336,8 +332,6 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Utils.init(this);
                 } else {
-                    Toast.makeText(MainActivity.this, "SAVING_IMAGE Denied", Toast.LENGTH_SHORT)
-                            .show();
                 }
                 break;
             default:
@@ -373,8 +367,8 @@ public class MainActivity extends AppCompatActivity {
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
         new AlertDialog.Builder(MainActivity.this)
                 .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton(R.string.ok, okListener)
+                .setNegativeButton(R.string.cancel, null)
                 .create()
                 .show();
     }
@@ -382,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
     private void showHelpMessage() {
         new AlertDialog.Builder(MainActivity.this)
                 .setMessage(R.string.insta_help)
-                .setPositiveButton("WATCH DEMO VIDEO", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/vakdQiqBZ50")));

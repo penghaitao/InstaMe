@@ -1,12 +1,11 @@
 package com.wartechwick.instasave.Utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Environment;
-
-import com.wartechwick.instasave.R;
+import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,7 +36,14 @@ public class Utils {
         }
     }
 
-    public static void saveImage(Bitmap bitmap, String filename, Activity context) {
+    public static Uri saveImage(ImageView itemView, String filename, Context context) {
+        Bitmap bitmap = ((BitmapDrawable) itemView.getDrawable()).getBitmap();
+        Uri contentUri = getImageUri(bitmap, filename, context);
+        IntentUtils.savetoAlbum(contentUri, context);
+        return contentUri;
+    }
+
+    public static Uri getImageUri(Bitmap bitmap, String filename, Context context) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
         byte[] bitmapdata = bos.toByteArray();
@@ -55,7 +61,7 @@ public class Utils {
             e.printStackTrace();
         }
         Uri contentUri = Uri.fromFile(file);
-        IntentUtils.savetoAlbum(contentUri, R.string.image_saved, context);
+        return contentUri;
     }
 
 }

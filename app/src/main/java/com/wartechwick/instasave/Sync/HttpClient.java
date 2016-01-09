@@ -57,7 +57,7 @@ public class HttpClient {
     }
 
     public static Photo getPhoto(String clipContent) {
-        String html1 = callAPI(Constant.API_BASE_URL+clipContent);
+        String json = callAPI(Constant.API_BASE_URL+clipContent);
         Gson gson = new GsonBuilder()
                 .setExclusionStrategies(new ExclusionStrategy() {
                     @Override
@@ -71,17 +71,17 @@ public class HttpClient {
                     }
                 })
                 .create();
-        Photo photo = gson.fromJson(html1, Photo.class);
+        Photo photo = gson.fromJson(json, Photo.class);
 
         String html = HttpClient.callAPI(clipContent);
         Document doc1 = Jsoup.parse(html);
-        Element vedioMeta = doc1.select("meta[property=og:video]").first();
-        String vedio = null;
-        if (vedioMeta != null) {
-            vedio = vedioMeta.attr("content");
+        Element videoMeta = doc1.select("meta[property=og:video]").first();
+        String video = null;
+        if (videoMeta != null) {
+            video = videoMeta.attr("content");
         }
         photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
-        photo.setVideoUrl(vedio);
+        photo.setVideoUrl(video);
         photo.setUrl(clipContent);
         photo.setTime(System.currentTimeMillis());
         return photo;
