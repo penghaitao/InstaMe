@@ -15,6 +15,9 @@ import com.wartechwick.instasave.db.Photo;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by penghaitao on 2015/12/19.
  */
@@ -117,30 +120,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public ImageView photoImageView;
-//        public VideoView gramVideoView;
-        public TextView authorNameView;
-        public ImageView downloadButton;
-        public ImageView shareButton;
-        public ImageView wallPaperButton;
-        public ImageView deleteButton;
+        @Bind(R.id.insta_image) ImageView photoImageView;
+        @Bind(R.id.author_name) TextView authorNameView;
+        @Bind(R.id.btn_save) ImageView downloadButton;
+        @Bind(R.id.btn_share) ImageView shareButton;
+        @Bind(R.id.btn_wallpaper) ImageView wallPaperButton;
+        @Bind(R.id.btn_delete) ImageView deleteButton;
+        @Bind(R.id.insta_play) ImageView playView;
         public int position;
-        private View mItemView;
-        private ImageView playView;
-//        private int stopPosition;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-            photoImageView = (ImageView) itemView.findViewById(R.id.insta_image);
-            authorNameView = (TextView) itemView.findViewById(R.id.author_name);
-            downloadButton = (ImageView) itemView.findViewById(R.id.btn_save);
-            shareButton = (ImageView) itemView.findViewById(R.id.btn_share);
-            wallPaperButton = (ImageView) itemView.findViewById(R.id.btn_wallpaper);
-            deleteButton = (ImageView) itemView.findViewById(R.id.btn_delete);
-//            gramVideoView = (VideoView) itemView.findViewById(R.id.insta_vedio);
-            playView = (ImageView) itemView.findViewById(R.id.insta_play);
-
+            ButterKnife.bind(this, itemView);
             authorNameView.setOnClickListener(this);
             downloadButton.setOnClickListener(this);
             shareButton.setOnClickListener(this);

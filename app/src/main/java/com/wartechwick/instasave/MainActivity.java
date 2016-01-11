@@ -2,6 +2,7 @@ package com.wartechwick.instasave;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -36,6 +38,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -45,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String tag = "MainActivity";
     private ClipboardManager clipboard;
     private List<Photo> photoList;
-    private RecyclerView recyclerView;
     private PhotoAdapter gramAdapter;
 
+    @Bind(R.id.insta_recyler_view) RecyclerView recyclerView;
+
     String clipContent = null;
+    String lastUrl = null;
 
     // Storage Permissions
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
         Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
@@ -70,13 +77,12 @@ public class MainActivity extends AppCompatActivity {
         textView.setTypeface(myTypeface);
         textView.setGravity(Gravity.CENTER);
         photoList = new ArrayList<Photo>();
-        recyclerView = (RecyclerView) findViewById(R.id.insta_recyler_view);
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
 
         setupAdapter();
-
+        lastUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(getResources().getString(R.string.last_url), "");
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -223,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
                 .findAll();
         result.sort("time", Sort.DESCENDING);
         Photo photo = result.get(position);
+        if (photo.getUrl().equals(lastUrl)) {
+            ClipData clipData = ClipData.newPlainText("", "");
+            clipboard.setPrimaryClip(clipData);
+        }
         photo.removeFromRealm();
         realm.commitTransaction();
         photoList.remove(position);
@@ -277,6 +287,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), clipContent).commit();
+            lastUrl = clipContent;
             Photo gram = HttpClient.getPhoto(clipContent);
             if (gram != null) {
                 photoList.add(0, gram);

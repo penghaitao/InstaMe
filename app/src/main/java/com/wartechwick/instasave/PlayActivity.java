@@ -10,9 +10,13 @@ import com.wartechwick.instasave.Utils.Utils;
 
 import java.io.File;
 
+import butterknife.Bind;
+
 
 public class PlayActivity extends Activity{
 
+
+    @Bind(R.id.video_view) VideoView gramVideoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +26,6 @@ public class PlayActivity extends Activity{
         Uri uri = Uri.parse(getIntent().getExtras().getString("videoUrl"));
         String filename = getIntent().getExtras().getString("filename");
         File file = new File(Utils.getImageDirectory(this)+filename);
-        VideoView gramVideoView = (VideoView) findViewById(R.id.video_view);
         gramVideoView.setMediaController(null);
         if (!file.exists()) {
             gramVideoView.setVideoURI(uri);
