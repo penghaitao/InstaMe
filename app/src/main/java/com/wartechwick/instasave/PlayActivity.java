@@ -11,6 +11,7 @@ import com.wartechwick.instasave.Utils.Utils;
 import java.io.File;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 public class PlayActivity extends Activity{
@@ -23,6 +24,7 @@ public class PlayActivity extends Activity{
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_play);
+        ButterKnife.bind(this);
         Uri uri = Uri.parse(getIntent().getExtras().getString("videoUrl"));
         String filename = getIntent().getExtras().getString("filename");
         File file = new File(Utils.getImageDirectory(this)+filename);

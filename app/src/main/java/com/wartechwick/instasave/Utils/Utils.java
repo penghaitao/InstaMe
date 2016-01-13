@@ -37,10 +37,15 @@ public class Utils {
     }
 
     public static Uri saveImage(ImageView itemView, String filename, Context context) {
-        Bitmap bitmap = ((BitmapDrawable) itemView.getDrawable()).getBitmap();
-        Uri contentUri = getImageUri(bitmap, filename, context);
-        IntentUtils.savetoAlbum(contentUri, context);
-        return contentUri;
+        BitmapDrawable bitmapDrawable = ((BitmapDrawable) itemView.getDrawable());
+        if (bitmapDrawable != null) {
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            Uri contentUri = getImageUri(bitmap, filename, context);
+            IntentUtils.savetoAlbum(contentUri, context);
+            return contentUri;
+        } else {
+            return null;
+        }
     }
 
     public static Uri getImageUri(Bitmap bitmap, String filename, Context context) {

@@ -1,6 +1,9 @@
 package com.wartechwick.instasave.Sync;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 
 import com.google.gson.ExclusionStrategy;
@@ -38,6 +41,17 @@ public class HttpClient {
     private final static int TIMEOUT_SOCKET = 30000;//30sec
     private final static String TAG = "HttpClient";
 
+    public static synchronized boolean isNetworkConnected(Context context) {
+        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connManager != null) {
+            NetworkInfo ni = connManager.getActiveNetworkInfo();
+            if (ni != null) {
+                return ni.isConnected();
+            }
+        }
+        return false;
+    }
+
     public static String callAPI(String url) {
         String result = null;
         OkHttpClient client = new OkHttpClient();
@@ -56,35 +70,39 @@ public class HttpClient {
         return result;
     }
 
-    public static Photo getPhoto(String clipContent) {
-        String json = callAPI(Constant.API_BASE_URL+clipContent);
-        Gson gson = new GsonBuilder()
-                .setExclusionStrategies(new ExclusionStrategy() {
-                    @Override
-                    public boolean shouldSkipField(FieldAttributes f) {
-                        return f.getDeclaringClass().equals(RealmObject.class);
-                    }
+    public static Photo getPhoto(Context context, String clipContent) {
+        if (isNetworkConnected(context)) {
+            String json = callAPI(Constant.API_BASE_URL+clipContent);
+            Gson gson = new GsonBuilder()
+                    .setExclusionStrategies(new ExclusionStrategy() {
+                        @Override
+                        public boolean shouldSkipField(FieldAttributes f) {
+                            return f.getDeclaringClass().equals(RealmObject.class);
+                        }
 
-                    @Override
-                    public boolean shouldSkipClass(Class<?> clazz) {
-                        return false;
-                    }
-                })
-                .create();
-        Photo photo = gson.fromJson(json, Photo.class);
+                        @Override
+                        public boolean shouldSkipClass(Class<?> clazz) {
+                            return false;
+                        }
+                    })
+                    .create();
+            Photo photo = gson.fromJson(json, Photo.class);
 
-        String html = HttpClient.callAPI(clipContent);
-        Document doc1 = Jsoup.parse(html);
-        Element videoMeta = doc1.select("meta[property=og:video]").first();
-        String video = null;
-        if (videoMeta != null) {
-            video = videoMeta.attr("content");
+            String html = HttpClient.callAPI(clipContent);
+            Document doc1 = Jsoup.parse(html);
+            Element videoMeta = doc1.select("meta[property=og:video]").first();
+            String video = null;
+            if (videoMeta != null) {
+                video = videoMeta.attr("content");
+            }
+            photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
+            photo.setVideoUrl(video);
+            photo.setUrl(clipContent);
+            photo.setTime(System.currentTimeMillis());
+            return photo;
+        } else {
+            return null;
         }
-        photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
-        photo.setVideoUrl(video);
-        photo.setUrl(clipContent);
-        photo.setTime(System.currentTimeMillis());
-        return photo;
     }
 
     public static Uri loadVideo(String videoUrl, String filename, Activity context) {

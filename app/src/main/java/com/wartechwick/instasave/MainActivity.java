@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private PhotoAdapter gramAdapter;
 
     @Bind(R.id.insta_recyler_view) RecyclerView recyclerView;
+    @Bind(R.id.adView) AdView mAdView;
 
     String clipContent = null;
     String lastUrl = null;
@@ -93,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         checkClipboard();
         verifyStoragePermissions();
 
-        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("3EDBD52D74D95B8CBE8E95973F7864DF").build();
         mAdView.loadAd(adRequest);
     }
@@ -181,8 +181,10 @@ public class MainActivity extends AppCompatActivity {
             File file = new File(Utils.getImageDirectory(this)+filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
-                    Utils.saveImage(itemView, filename, this);
-                    IntentUtils.showSnackbar(R.string.image_saved, this);
+                    Uri uri = Utils.saveImage(itemView, filename, this);
+                    if (uri != null) {
+                        IntentUtils.showSnackbar(R.string.image_saved, this);
+                    }
                 } else {
                     IntentUtils.showSnackbar(R.string.image_saved_already, this);
                 }
@@ -289,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), clipContent).commit();
             lastUrl = clipContent;
-            Photo gram = HttpClient.getPhoto(clipContent);
+            Photo gram = HttpClient.getPhoto(MainActivity.this, clipContent);
             if (gram != null) {
                 photoList.add(0, gram);
                 Realm realm = Realm.getInstance(MainActivity.this);

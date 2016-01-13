@@ -8,8 +8,8 @@ android {
         applicationId "com.wartechwick.instasave"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20160111
-        versionName "1.0.4"
+        versionCode 20160112
+        versionName "1.0.5"
     }
     buildTypes {
         release {
