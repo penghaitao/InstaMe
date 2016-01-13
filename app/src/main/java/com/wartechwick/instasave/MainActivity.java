@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Storage Permissions
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             if (clipContent.contains(Constant.INSTAGRAM_BASE_URL)) {
                 boolean isExist = false;
                 for (Photo photo : photoList) {
-                    if (clipContent.equals(photo.getUrl())) {
+                    if (photo.isValid() && clipContent.equals(photo.getUrl())) {
                         isExist = true;
                         break;
                     }
