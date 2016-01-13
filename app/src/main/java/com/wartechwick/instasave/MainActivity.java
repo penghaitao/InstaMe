@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     String clipContent = null;
     String lastUrl = null;
+    boolean isFirstOpen = false;
 
     // Storage Permissions
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -84,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
         setupAdapter();
         lastUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(getResources().getString(R.string.last_url), "");
+        isFirstOpen = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getResources().getString(R.string.first_open), true);
+        if (isFirstOpen) {
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(getResources().getString(R.string.first_open), false).commit();
+            showHelpMessage(R.string.welcome);
+        }
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -92,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         checkClipboard();
-        verifyStoragePermissions();
+//        verifyStoragePermissions();
 
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("3EDBD52D74D95B8CBE8E95973F7864DF").build();
         mAdView.loadAd(adRequest);
@@ -183,16 +190,16 @@ public class MainActivity extends AppCompatActivity {
                 if (!file.exists()) {
                     Uri uri = Utils.saveImage(itemView, filename, this);
                     if (uri != null) {
-                        IntentUtils.showSnackbar(R.string.image_saved, this);
+                        IntentUtils.showSnackbar(R.string.image_saved, this, Snackbar.LENGTH_SHORT);
                     }
                 } else {
-                    IntentUtils.showSnackbar(R.string.image_saved_already, this);
+                    IntentUtils.showSnackbar(R.string.image_saved_already, this, Snackbar.LENGTH_SHORT);
                 }
             } else {
                 if (!file.exists()) {
                     new SaveVideoTask(false).execute(videoUrl, filename);
                 } else {
-                    IntentUtils.showSnackbar(R.string.video_saved_already, this);
+                    IntentUtils.showSnackbar(R.string.video_saved_already, this, Snackbar.LENGTH_SHORT);
                 }
             }
         }
@@ -280,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             IntentUtils.saveVideoOrShare(MainActivity.this, params[0], params[1], needShare);
-            IntentUtils.showSnackbar(R.string.video_saved, MainActivity.this);
+            IntentUtils.showSnackbar(R.string.video_saved, MainActivity.this, Snackbar.LENGTH_SHORT);
             return null;
         }
     }
@@ -327,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
-                showHelpMessage();
+                showHelpMessage(R.string.app_name);
                 break;
             case R.id.action_feedback:
                 IntentUtils.sendFeedback(this);
@@ -342,10 +349,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_EXTERNAL_STORAGE:
+            case REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    IntentUtils.showSnackbar(R.string.permission_granted, this, Snackbar.LENGTH_LONG);
                     Utils.init(this);
                 } else {
+                    IntentUtils.showSnackbar(R.string.need_permission, this, Snackbar.LENGTH_LONG);
                 }
                 break;
             default:
@@ -357,17 +366,17 @@ public class MainActivity extends AppCompatActivity {
 
         int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        REQUEST_CODE_ASK_PERMISSIONS);
-                            }
-                        });
-                return false;
-            }
+//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                        REQUEST_CODE_ASK_PERMISSIONS);
+//                            }
+//                        });
+//                return false;
+//            }
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_CODE_ASK_PERMISSIONS);
             return false;
@@ -378,22 +387,40 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setPositiveButton(R.string.ok, okListener)
-                .setNegativeButton(R.string.cancel, null)
-                .create()
-                .show();
-    }
+//    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+//        new AlertDialog.Builder(MainActivity.this)
+//                .setMessage(message)
+//                .setPositiveButton(R.string.ok, okListener)
+//                .setNegativeButton(R.string.cancel, null)
+//                .create()
+//                .show();
+//    }
 
-    private void showHelpMessage() {
+    private void showHelpMessage(int titleId) {
         new AlertDialog.Builder(MainActivity.this)
+                .setTitle(titleId)
                 .setMessage(R.string.insta_help)
                 .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/vakdQiqBZ50")));
+                    }
+                })
+                .setNegativeButton(R.string.go_to_instagram, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PackageManager manager = getPackageManager();
+                        Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
+                        if (i == null) {
+                            //throw new PackageManager.NameNotFoundException();
+                            i = new Intent(Intent.ACTION_VIEW);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setData(Uri.parse("market://details?id=" + "com.instagram.android"));
+                            startActivity(i);
+                        } else {
+                            i.addCategory(Intent.CATEGORY_LAUNCHER);
+                            startActivity(i);
+                        }
                     }
                 })
                 .create()

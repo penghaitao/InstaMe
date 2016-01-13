@@ -84,8 +84,8 @@ public class IntentUtils {
         context.sendBroadcast(mediaScanIntent);
     }
 
-    public static void showSnackbar(int resId, Activity context) {
-        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, Snackbar.LENGTH_SHORT);
+    public static void showSnackbar(int resId, Activity context, int duration) {
+        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundResource(R.color.colorAccent);
         snackbar.show();

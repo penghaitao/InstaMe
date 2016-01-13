@@ -4,9 +4,12 @@
     <string name="action_help">Help</string>
     <string name="action_feedback">Feedback</string>
     <string name="action_rate">Rate InstaMe</string>
+    <string name="welcome">Welcome</string>
     <string name="insta_help">3 Steps to get your favorite photo/video from Instagram(1st and 2nd steps can be swapped)\n\n
         1. Open InstaMe\n\n 2. Open your Instagram, choose Copy Share URL on photo/video you like\n\n 3. Back to InstaMe,
         you will see the photo/video in the list. You can save, share or set wallpaper as you wish.</string>
+    <string name="need_permission">You need to allow access to your storage, So we can save the picture</string>
+    <string name="permission_granted">Now You can save, share or set wallpaper as you wish. Enjoy!</string>
     <string name="image_saved">Image has been saved! :)</string>
     <string name="video_saved">Video has been saved! :)</string>
     <string name="image_saved_already">Image has been saved already, you can see it in your album</string>
@@ -15,7 +18,9 @@
     <string name="ok">OK</string>
     <string name="cancel">cancel</string>
     <string name="watch_demo">WATCH DEMO VIDEO</string>
+    <string name="go_to_instagram">GO TO INSTAGRAM</string>
     <string name="last_url">LASTURL</string>
+    <string name="first_open">FIRSTOPEN</string>
 
     <string name="title_activity_play">PlayActivity</string>
     <string name="dummy_button">Dummy Button</string>
