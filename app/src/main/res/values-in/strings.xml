@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">InstaMe</string>
+    <string name="action_feedback">Masukan</string>
+    <string name="action_help">Bantuan</string>
+    <string name="action_rate">PemeringkatanInstaMe</string>
+    <string name="action_settings">Pengaturan</string>
+    <string name="cancel">Batalkan</string>
+    <string name="go_to_instagram">PILIH MENU INSTAGRAM</string>
+    <string name="image_saved">Fototelahtersimpan</string>
+    <string name="image_saved_already">Fototelahtersimpan, silahkanlihatdalamalbumu</string>
+    <string name="insta_help">Tigalangkahuntukmendapatkanfoto/video melalui Instagram\n\n 1. BukaInstaMe \n\n 2. Bukaakuninstragam, pilih menu Copy Share padatautanfoto/video yang kamusukai \n\n 3. KembalikeInstaMedanakanterlihatdaftarfoto/video.Kamudapatmenyimpan, berbagiataumenggunakannyasebagai wallpaper</string>
+    <string name="need_permission">Pastikankamumemilikikapasitas yang cukupuntukpenyimpanankoleksifotomu</string>
+    <string name="ok">OK</string>
+    <string name="permission_granted">Sekarangkamudapatmeyimpan, berbagiataumenggunakannyasebagai wallpaper. Enjoy!</string>
+    <string name="video_saved">Video telahtersimpan</string>
+    <string name="video_saved_already">Video telahtersimpan, silahkanlihatdalamalbumu</string>
+    <string name="video_start_saving">Dalam proses mengunduh…mohonmenunggu</string>
+    <string name="watch_demo">LIHAT DEMO VIDEO</string>
+    <string name="welcome">SelamatDatang</string>
+
+</resources>
