@@ -19,12 +19,10 @@
     <string name="cancel">cancel</string>
     <string name="watch_demo">WATCH DEMO VIDEO</string>
     <string name="go_to_instagram">GO TO INSTAGRAM</string>
-    <string name="last_url">LASTURL</string>
-    <string name="first_open">FIRSTOPEN</string>
+    <string name="last_url" translatable="false">LASTURL</string>
+    <string name="first_open" translatable="false">FIRSTOPEN</string>
 
-    <string name="title_activity_play">PlayActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_play" translatable="false">PlayActivity</string>
 
-    <string name="banner_ad_unit_id">ca-app-pub-7166408441889547/7684651515</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7166408441889547/7684651515</string>
 </resources>
