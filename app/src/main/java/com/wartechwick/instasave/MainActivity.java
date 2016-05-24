@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -52,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private List<Photo> photoList;
     private PhotoAdapter gramAdapter;
 
-    @Bind(R.id.insta_recyler_view) RecyclerView recyclerView;
-    @Bind(R.id.adView) AdView mAdView;
+    @Bind(R.id.insta_recyler_view)
+    RecyclerView recyclerView;
+    @Bind(R.id.adView)
+    AdView mAdView;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
 
     String clipContent = null;
     String lastUrl = null;
@@ -82,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoInstagram();
+            }
+        });
 
         setupAdapter();
         lastUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(getResources().getString(R.string.last_url), "");
@@ -172,9 +183,9 @@ public class MainActivity extends AppCompatActivity {
         String[] urlBits = photo.getUrl().split("/");
         String videoUrl = photo.getVideoUrl();
         if (videoUrl == null) {
-            filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1] + ".jpg";
+            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1] + ".jpg";
         } else {
-            filename = photo.getAuthorName() + "_"+ urlBits[urlBits.length-1] + ".mp4";
+            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1] + ".mp4";
         }
         return filename;
     }
@@ -184,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
-            File file = new File(Utils.getImageDirectory(this)+filename);
+            File file = new File(Utils.getImageDirectory(this) + filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
                     Uri uri = Utils.saveImage(itemView, filename, this);
@@ -212,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             if (videoUrl == null) {
                 IntentUtils.shareImage(itemView, filename, this);
             } else {
-                File file = new File(Utils.getImageDirectory(this)+filename);
+                File file = new File(Utils.getImageDirectory(this) + filename);
                 if (!file.exists()) {
                     new SaveVideoTask(true).execute(videoUrl, filename);
                 } else {
@@ -251,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     private void play(int position) {
         Photo photo = photoList.get(position);
         String[] urlBits = photo.getUrl().split("/");
-        String filename = urlBits[urlBits.length-1]+".mp4";
+        String filename = urlBits[urlBits.length - 1] + ".mp4";
         IntentUtils.playVideo(MainActivity.this, photo.getVideoUrl(), filename);
     }
 
@@ -408,22 +419,26 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.go_to_instagram, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PackageManager manager = getPackageManager();
-                        Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
-                        if (i == null) {
-                            //throw new PackageManager.NameNotFoundException();
-                            i = new Intent(Intent.ACTION_VIEW);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.setData(Uri.parse("market://details?id=" + "com.instagram.android"));
-                            startActivity(i);
-                        } else {
-                            i.addCategory(Intent.CATEGORY_LAUNCHER);
-                            startActivity(i);
-                        }
+                        gotoInstagram();
                     }
                 })
                 .create()
                 .show();
+    }
+
+    private void gotoInstagram() {
+        PackageManager manager = getPackageManager();
+        Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
+        if (i == null) {
+            //throw new PackageManager.NameNotFoundException();
+            i = new Intent(Intent.ACTION_VIEW);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setData(Uri.parse("market://details?id=" + "com.instagram.android"));
+            startActivity(i);
+        } else {
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            startActivity(i);
+        }
     }
 
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#125688</color>
-    <color name="colorPrimaryDark">#0f4973</color>
+    <color name="colorPrimary">#fafafa</color>
+    <color name="colorPrimaryDark">#b2b2b2</color>
     <color name="colorAccent">#66bd2b</color>
-    <color name="instagram_bold_font">#3f729b</color>
+    <color name="instagram_bold_font">#262626</color>
     <color name="blue_800">#1565C0</color>
 
     <color name="black_overlay">#66000000</color>
