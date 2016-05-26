@@ -21,6 +21,9 @@
     <string name="go_to_instagram">GO TO INSTAGRAM</string>
     <string name="last_url" translatable="false">LASTURL</string>
     <string name="first_open" translatable="false">FIRSTOPEN</string>
+    <!--empty view-->
+    <string name="hint_empty_view" translatable="false">No photo saved yet</string>
+    <string name="no_data_available" translatable="false">Open Instagram to save photo as you like</string>
 
     <string name="title_activity_play" translatable="false">PlayActivity</string>
 

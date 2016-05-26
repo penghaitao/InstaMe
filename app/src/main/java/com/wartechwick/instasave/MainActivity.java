@@ -24,7 +24,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -46,7 +48,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String tag = "MainActivity";
     private ClipboardManager clipboard;
@@ -59,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
     AdView mAdView;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.empty_view)
+    LinearLayout emptyView;
+    @Bind(R.id.btn_goto_instagram)
+    Button gotoinstagramButton;
 
     String clipContent = null;
     String lastUrl = null;
@@ -87,13 +93,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
         recyclerView.addItemDecoration(itemDecoration);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoInstagram();
-            }
-        });
-
+        fab.setOnClickListener(this);
+        gotoinstagramButton.setOnClickListener(this);
         setupAdapter();
         lastUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(getResources().getString(R.string.last_url), "");
         isFirstOpen = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getResources().getString(R.string.first_open), true);
@@ -127,7 +128,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (!isExist) {
-                    new LoadUrlTask().execute();
+                    if (emptyView.getVisibility() == View.VISIBLE) {
+                        undoSetEmptyView();
+                    }
+                    new LoadUrlTask().execute(clipContent);
                 }
             }
         }
@@ -144,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
             gramAdapter.setiPhotoClickListener(getGramClickListener());
             recyclerView.setAdapter(gramAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        } else {
+            setEmptyView();
         }
     }
 
@@ -247,6 +253,10 @@ public class MainActivity extends AppCompatActivity {
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
         result.sort("time", Sort.DESCENDING);
+        //this is realm's bug, maybe in the future will be fixed;
+        if (position>= result.size()) {
+            position = result.size()-1;
+        }
         Photo photo = result.get(position);
         if (photo.getUrl().equals(lastUrl)) {
             ClipData clipData = ClipData.newPlainText("", "");
@@ -257,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
         photoList.remove(position);
         gramAdapter.notifyItemRemoved(position);
         gramAdapter.notifyItemRangeChanged(position, gramAdapter.getItemCount());
+        if (photoList.size() == 0) {
+            setEmptyView();
+        }
     }
 
     private void play(int position) {
@@ -264,6 +277,16 @@ public class MainActivity extends AppCompatActivity {
         String[] urlBits = photo.getUrl().split("/");
         String filename = urlBits[urlBits.length - 1] + ".mp4";
         IntentUtils.playVideo(MainActivity.this, photo.getVideoUrl(), filename);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab:
+            case R.id.btn_goto_instagram:
+                gotoInstagram();
+                break;
+        }
     }
 
     class SaveVideoTask extends AsyncTask<String, Integer, String> {
@@ -306,9 +329,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), clipContent).commit();
-            lastUrl = clipContent;
-            Photo gram = HttpClient.getPhoto(MainActivity.this, clipContent);
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).commit();
+            lastUrl = params[0];
+            Photo gram = HttpClient.getPhoto(MainActivity.this, params[0]);
             if (gram != null) {
                 photoList.add(0, gram);
                 Realm realm = Realm.getInstance(MainActivity.this);
@@ -424,6 +447,20 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .create()
                 .show();
+    }
+
+    private void setEmptyView() {
+        recyclerView.setVisibility(View.INVISIBLE);
+        emptyView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.GONE);
+        mAdView.setVisibility(View.GONE);
+    }
+
+    private void undoSetEmptyView() {
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+        fab.setVisibility(View.VISIBLE);
+        mAdView.setVisibility(View.VISIBLE);
     }
 
     private void gotoInstagram() {

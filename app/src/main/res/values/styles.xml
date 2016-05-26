@@ -8,7 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
-
+    <style name="Theme.MaterialButton" parent="AppTheme">
+        <item name="colorAccent">#c9cbcc</item>
+        <item name="colorButtonNormal">#edeeee</item>
+    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
