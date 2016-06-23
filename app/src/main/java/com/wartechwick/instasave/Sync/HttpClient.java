@@ -10,6 +10,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -71,6 +72,7 @@ public class HttpClient {
     }
 
     public static Photo getPhoto(Context context, String clipContent) {
+        Photo photo = null;
         if (isNetworkConnected(context)) {
             String json = callAPI(Constant.API_BASE_URL+clipContent);
             Gson gson = new GsonBuilder()
@@ -86,23 +88,24 @@ public class HttpClient {
                         }
                     })
                     .create();
-            Photo photo = gson.fromJson(json, Photo.class);
-
-            String html = HttpClient.callAPI(clipContent);
-            Document doc1 = Jsoup.parse(html);
-            Element videoMeta = doc1.select("meta[property=og:video]").first();
-            String video = null;
-            if (videoMeta != null) {
-                video = videoMeta.attr("content");
+            try {
+                photo = gson.fromJson(json, Photo.class);
+                String html = HttpClient.callAPI(clipContent);
+                Document doc1 = Jsoup.parse(html);
+                Element videoMeta = doc1.select("meta[property=og:video]").first();
+                String video = null;
+                if (videoMeta != null) {
+                    video = videoMeta.attr("content");
+                }
+                photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
+                photo.setVideoUrl(video);
+                photo.setUrl(clipContent);
+                photo.setTime(System.currentTimeMillis());
+            } catch (IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
+                exception.printStackTrace();
             }
-            photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
-            photo.setVideoUrl(video);
-            photo.setUrl(clipContent);
-            photo.setTime(System.currentTimeMillis());
-            return photo;
-        } else {
-            return null;
         }
+        return photo;
     }
 
     public static Uri loadVideo(String videoUrl, String filename, Activity context) {

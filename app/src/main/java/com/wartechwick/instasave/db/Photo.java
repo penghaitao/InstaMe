@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * Created by penghaitao on 2015/12/17.
@@ -15,6 +16,7 @@ public class Photo extends RealmObject{
     private String authorName;
     @SerializedName("media_id")
     private String mediaId;
+    @Required
     @PrimaryKey
     @SerializedName("thumbnail_url")
     private String thumbnailUrl;

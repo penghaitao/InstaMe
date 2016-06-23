@@ -15,18 +15,18 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -39,12 +39,14 @@ import com.wartechwick.instasave.Utils.Utils;
 import com.wartechwick.instasave.db.Photo;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Photo> photoList;
     private PhotoAdapter gramAdapter;
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolBar;
     @Bind(R.id.insta_recyler_view)
     RecyclerView recyclerView;
     @Bind(R.id.adView)
@@ -65,10 +69,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout emptyView;
     @Bind(R.id.btn_goto_instagram)
     Button gotoinstagramButton;
+    @Bind(R.id.progressbar)
+    ProgressBar progressBar;
 
     String clipContent = null;
     String lastUrl = null;
     boolean isFirstOpen = false;
+    RealmConfiguration config;
+    private int progressbarNum = 0;
 
     // Storage Permissions
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -83,12 +91,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.abs_layout);
-        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
-        TextView textView = (TextView) findViewById(R.id.title);
-        textView.setTypeface(myTypeface);
-        textView.setGravity(Gravity.CENTER);
+        setSupportActionBar(mToolBar);
+        getActionBarTextView();
+        config = new RealmConfiguration.Builder(MainActivity.this).build();
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(R.layout.abs_layout);
+//        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
+//        TextView textView = (TextView) findViewById(R.id.title);
+//        textView.setTypeface(myTypeface);
+//        textView.setGravity(Gravity.CENTER);
         photoList = new ArrayList<Photo>();
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
@@ -116,6 +127,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdView.loadAd(adRequest);
     }
 
+    private TextView getActionBarTextView() {
+        TextView titleTextView = null;
+
+        try {
+            Field f = mToolBar.getClass().getDeclaredField("mTitleTextView");
+            Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
+            f.setAccessible(true);
+            titleTextView = (TextView) f.get(mToolBar);
+            titleTextView.setTextSize(36);
+            titleTextView.setPadding(0, 10, 0, 0);
+            titleTextView.setTypeface(myTypeface);
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
+        }
+        return titleTextView;
+    }
+
+
     private void checkClipboard() {
         if (clipboard.getPrimaryClip() != null && clipboard.getPrimaryClip().getItemAt(0) != null && clipboard.getPrimaryClip().getItemAt(0).getText() != null) {
             clipContent = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
@@ -138,11 +167,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupAdapter() {
-        Realm realm = Realm.getInstance(MainActivity.this);
+        Realm realm = Realm.getInstance(config);
         RealmResults<Photo> result2 = realm.where(Photo.class)
                 .findAll();
         if (result2 != null && result2.size() > 0) {
-            result2.sort("time", Sort.DESCENDING);
+            result2 = result2.sort("time", Sort.DESCENDING);
             photoList = new ArrayList<Photo>(result2.subList(0, result2.size()));
             gramAdapter = new PhotoAdapter(MainActivity.this, photoList);
             gramAdapter.setiPhotoClickListener(getGramClickListener());
@@ -248,11 +277,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void delete(int position) {
-        Realm realm = Realm.getInstance(MainActivity.this);
+        Realm realm = Realm.getInstance(config);
         realm.beginTransaction();
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
-        result.sort("time", Sort.DESCENDING);
+        result = result.sort("time", Sort.DESCENDING);
         //this is realm's bug, maybe in the future will be fixed;
         if (position>= result.size()) {
             position = result.size()-1;
@@ -262,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ClipData clipData = ClipData.newPlainText("", "");
             clipboard.setPrimaryClip(clipData);
         }
-        photo.removeFromRealm();
+        photo.deleteFromRealm();
         realm.commitTransaction();
         photoList.remove(position);
         gramAdapter.notifyItemRemoved(position);
@@ -328,23 +357,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     class LoadUrlTask extends AsyncTask<String, Integer, String> {
 
         @Override
+        protected void onPreExecute() {
+            if (progressBar.getVisibility() != View.VISIBLE) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.getIndeterminateDrawable().setColorFilter(
+                        getResources().getColor(R.color.chrome_blue),
+                        android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            progressbarNum++;
+        }
+
+        @Override
         protected String doInBackground(String... params) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).commit();
             lastUrl = params[0];
             Photo gram = HttpClient.getPhoto(MainActivity.this, params[0]);
+            String reminder = null;
             if (gram != null) {
                 photoList.add(0, gram);
-                Realm realm = Realm.getInstance(MainActivity.this);
+                Realm realm = Realm.getInstance(config);
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(gram);
                 realm.commitTransaction();
+            } else {
+                reminder = getString(R.string.app_name);
             }
-            return null;
+            return reminder;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if (gramAdapter != null) {
+            progressbarNum--;
+            if (progressbarNum == 0) {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+            if (result != null) {
+//                IntentUtils.showSnackbar(R.string.app_name, MainActivity.this, Snackbar.LENGTH_SHORT);
+            }
+            else if (gramAdapter != null) {
                 gramAdapter.notifyDataSetChanged();
             } else {
                 setupAdapter();
