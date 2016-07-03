@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "272236482712",
+    "firebase_url": "https://instame-aa364.firebaseio.com",
+    "project_id": "instame-aa364",
+    "storage_bucket": "instame-aa364.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272236482712:android:a9db0d289cd2ba52",
+        "android_client_info": {
+          "package_name": "com.wartechwick.instasave"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272236482712-1d90q972ce03idmp8rjkg2el3e1m1903.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wartechwick.instasave",
+            "certificate_hash": "81772C600F168D6F9CB39BC32C837418F37E3513"
+          }
+        },
+        {
+          "client_id": "272236482712-k0hmr0p7i4bpsg7ujre9qtuk8dh4m5ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5P0kppSw5GbOxbgLSJPrMQTNdHfJmewg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272236482712-k0hmr0p7i4bpsg7ujre9qtuk8dh4m5ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

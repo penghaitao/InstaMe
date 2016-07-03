@@ -31,6 +31,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.wartechwick.instasave.Sync.HttpClient;
 import com.wartechwick.instasave.UI.OnPhotoClickListener;
 import com.wartechwick.instasave.Utils.Constant;
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
         setSupportActionBar(mToolBar);
         getActionBarTextView();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         config = new RealmConfiguration.Builder(MainActivity.this).build();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -123,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkClipboard();
 //        verifyStoragePermissions();
 
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("3EDBD52D74D95B8CBE8E95973F7864DF").build();
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~9838406716");
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
         mAdView.loadAd(adRequest);
     }
 
@@ -161,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         undoSetEmptyView();
                     }
                     new LoadUrlTask().execute(clipContent);
+                    logFirebaseEvent("LOAD", "LOAD");
                 }
             }
         }
@@ -230,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
+            logFirebaseEvent(filename, "SAVE");
             File file = new File(Utils.getImageDirectory(this) + filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
@@ -255,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
+            logFirebaseEvent(filename, "SHARE");
             if (videoUrl == null) {
                 IntentUtils.shareImage(itemView, filename, this);
             } else {
@@ -272,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void wallpaper(int position, ImageView itemView) {
         if (verifyStoragePermissions()) {
             String filename = getFileName(position);
+            logFirebaseEvent(filename, "WALLPAPER");
             IntentUtils.setWallPaper(itemView, filename, MainActivity.this);
         }
     }
@@ -286,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (position>= result.size()) {
             position = result.size()-1;
         }
+        logFirebaseEvent("DELETE", "DELETE");
         Photo photo = result.get(position);
         if (photo.getUrl().equals(lastUrl)) {
             ClipData clipData = ClipData.newPlainText("", "");
@@ -423,7 +434,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 IntentUtils.sendFeedback(this);
                 break;
             case R.id.action_rate:
-                IntentUtils.rateInstaMe(this);
+                showSupportMessage();
+                logFirebaseEvent("SUPPORT", "SUPPORT");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -489,14 +501,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/vakdQiqBZ50")));
                     }
                 })
-                .setNegativeButton(R.string.go_to_instagram, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        gotoInstagram();
-                    }
-                })
+                .setNegativeButton(R.string.got_it, null)
                 .create()
                 .show();
+    }
+
+    private void showSupportMessage() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.action_rate)
+                .setMessage(R.string.support_message)
+                .setPositiveButton(R.string.rate_now, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        IntentUtils.rateInstaMe(MainActivity.this);
+                    }
+                })
+                .setNegativeButton(R.string.not_now, null)
+                .create()
+                .show();
+
     }
 
     private void setEmptyView() {
@@ -510,12 +533,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         fab.setVisibility(View.VISIBLE);
-        mAdView.setVisibility(View.VISIBLE);
+        mAdView.setVisibility(View.GONE);
     }
 
     private void gotoInstagram() {
         PackageManager manager = getPackageManager();
         Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
+        logFirebaseEvent("GOTO", "GOTO");
         if (i == null) {
             //throw new PackageManager.NameNotFoundException();
             i = new Intent(Intent.ACTION_VIEW);
@@ -526,6 +550,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             i.addCategory(Intent.CATEGORY_LAUNCHER);
             startActivity(i);
         }
+    }
+
+    private void logFirebaseEvent(String name, String type) {
+        Bundle params = new Bundle();
+        params.putString("FILE_NAME", name);
+        mFirebaseAnalytics.logEvent(type, params);
     }
 
 }

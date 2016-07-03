@@ -17,10 +17,16 @@
     <string name="video_start_saving">Downloading...Please wait</string>
     <string name="ok">OK</string>
     <string name="cancel">cancel</string>
+    <string name="got_it">GOT IT!</string>
     <string name="watch_demo">WATCH DEMO VIDEO</string>
     <string name="go_to_instagram">GO TO INSTAGRAM</string>
     <string name="last_url" translatable="false">LASTURL</string>
     <string name="first_open" translatable="false">FIRSTOPEN</string>
+
+    <!--support message-->
+    <string name="support_message">If you enjoy using us, will you rate us 5 stars?</string>
+    <string name="not_now">NOT NOW</string>
+    <string name="rate_now">YES, RATE NOW</string>
     <!--empty view-->
     <string name="hint_empty_view" translatable="false">No photo saved yet</string>
     <string name="no_data_available" translatable="false">Open Instagram to save photo as you like</string>

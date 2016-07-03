@@ -41,7 +41,7 @@
         android:id="@+id/insta_recyler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </android.support.v7.widget.RecyclerView>
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="66dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/ic_instagram_outline"
         app:backgroundTint="#ed4956"
@@ -99,6 +99,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         ads:adSize="SMART_BANNER"
+        android:visibility="gone"
         ads:adUnitId="@string/banner_ad_unit_id">
     </com.google.android.gms.ads.AdView>
 
