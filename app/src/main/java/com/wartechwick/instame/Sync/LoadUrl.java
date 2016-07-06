@@ -1,4 +1,4 @@
-package com.wartechwick.instasave.Sync;
+package com.wartechwick.instame.Sync;
 
 import android.os.AsyncTask;
 

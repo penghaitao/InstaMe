@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.VideoView;
 
-import com.wartechwick.instasave.Utils.Utils;
+import com.wartechwick.instame.Utils.Utils;
 
 import java.io.File;
 

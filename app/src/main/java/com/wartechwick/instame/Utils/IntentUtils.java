@@ -1,4 +1,4 @@
-package com.wartechwick.instasave.Utils;
+package com.wartechwick.instame.Utils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -9,10 +9,10 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.wartechwick.instasave.MainActivity;
-import com.wartechwick.instasave.PlayActivity;
-import com.wartechwick.instasave.R;
-import com.wartechwick.instasave.Sync.HttpClient;
+import com.wartechwick.instame.MainActivity;
+import com.wartechwick.instame.PlayActivity;
+import com.wartechwick.instame.R;
+import com.wartechwick.instame.Sync.HttpClient;
 
 import java.io.File;
 
@@ -94,7 +94,7 @@ public class IntentUtils {
     public static void sendFeedback(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "wartechwick@gmail.com", null));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"wartechwick@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "InstaMe feedback");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "InstantMe feedback");
         intent.putExtra(Intent.EXTRA_TEXT, "");
 
         activity.startActivity(Intent.createChooser(intent, "Send Email"));

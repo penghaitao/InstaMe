@@ -49,6 +49,50 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272236482712:android:52ae0a68a3f426f3",
+        "android_client_info": {
+          "package_name": "com.wartechwick.instame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272236482712-uedb9horcq4469c98ae667vog3rtlm3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wartechwick.instame",
+            "certificate_hash": "81772C600F168D6F9CB39BC32C837418F37E3513"
+          }
+        },
+        {
+          "client_id": "272236482712-k0hmr0p7i4bpsg7ujre9qtuk8dh4m5ma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5P0kppSw5GbOxbgLSJPrMQTNdHfJmewg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272236482712-k0hmr0p7i4bpsg7ujre9qtuk8dh4m5ma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

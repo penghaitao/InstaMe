@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 /**
  * Created by penghaitao on 2015/12/30.
@@ -6,7 +6,7 @@ package com.wartechwick.instasave;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.wartechwick.instasave.Sync.HttpClient;
+import com.wartechwick.instame.Sync.HttpClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

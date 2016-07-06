@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.wartechwick.instasave.UI.OnPhotoClickListener;
-import com.wartechwick.instasave.db.Photo;
+import com.wartechwick.instame.UI.OnPhotoClickListener;
+import com.wartechwick.instame.db.Photo;
 
 import java.util.List;
 

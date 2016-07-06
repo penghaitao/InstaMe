@@ -1,4 +1,4 @@
-package com.wartechwick.instasave.db;
+package com.wartechwick.instame.db;
 
 import com.google.gson.annotations.SerializedName;
 

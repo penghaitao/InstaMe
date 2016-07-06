@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -28,17 +28,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.wartechwick.instasave.Sync.HttpClient;
-import com.wartechwick.instasave.UI.OnPhotoClickListener;
-import com.wartechwick.instasave.Utils.Constant;
-import com.wartechwick.instasave.Utils.IntentUtils;
-import com.wartechwick.instasave.Utils.Utils;
-import com.wartechwick.instasave.db.Photo;
+import com.wartechwick.instame.Sync.HttpClient;
+import com.wartechwick.instame.UI.OnPhotoClickListener;
+import com.wartechwick.instame.Utils.Constant;
+import com.wartechwick.instame.Utils.IntentUtils;
+import com.wartechwick.instame.Utils.Utils;
+import com.wartechwick.instame.db.Photo;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -98,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(mToolBar);
         getActionBarTextView();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        if (BuildConfig.DEBUG) {
+            Toast.makeText(this, "debug", Toast.LENGTH_SHORT).show();
+            mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
+        }
         config = new RealmConfiguration.Builder(MainActivity.this).build();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -128,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkClipboard();
 //        verifyStoragePermissions();
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~9838406716");
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
         mAdView.loadAd(adRequest);
     }
@@ -498,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/vakdQiqBZ50")));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/hya4gYWrZmo")));
                     }
                 })
                 .setNegativeButton(R.string.got_it, null)
@@ -525,15 +530,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setEmptyView() {
         recyclerView.setVisibility(View.INVISIBLE);
         emptyView.setVisibility(View.VISIBLE);
-        fab.setVisibility(View.GONE);
+//        fab.setVisibility(View.GONE);
         mAdView.setVisibility(View.GONE);
     }
 
     private void undoSetEmptyView() {
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
-        fab.setVisibility(View.VISIBLE);
-        mAdView.setVisibility(View.GONE);
+//        fab.setVisibility(View.GONE);//temporary set no visibility
+        mAdView.setVisibility(View.VISIBLE);
     }
 
     private void gotoInstagram() {

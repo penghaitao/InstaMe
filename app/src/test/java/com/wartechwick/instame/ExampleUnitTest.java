@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.wartechwick.instasave;
+package com.wartechwick.instame;
 
 import android.content.Context;
 import android.content.res.TypedArray;

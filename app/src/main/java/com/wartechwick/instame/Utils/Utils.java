@@ -1,4 +1,4 @@
-package com.wartechwick.instasave.Utils;
+package com.wartechwick.instame.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -30,9 +30,9 @@ public class Utils {
 
     public static String getImageDirectory(Context context) {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            return Environment.getExternalStorageDirectory() + "/InstaMe/";
+            return Environment.getExternalStorageDirectory() + "/InstantMe/";
         } else {
-            return context.getCacheDir() + "/InstaMe/";
+            return context.getCacheDir() + "/InstantMe/";
         }
     }
 

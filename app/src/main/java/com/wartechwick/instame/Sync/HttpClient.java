@@ -1,4 +1,4 @@
-package com.wartechwick.instasave.Sync;
+package com.wartechwick.instame.Sync;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,9 +14,9 @@ import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.wartechwick.instasave.Utils.Constant;
-import com.wartechwick.instasave.Utils.Utils;
-import com.wartechwick.instasave.db.Photo;
+import com.wartechwick.instame.Utils.Constant;
+import com.wartechwick.instame.Utils.Utils;
+import com.wartechwick.instame.db.Photo;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -101,7 +101,7 @@ public class HttpClient {
                 photo.setVideoUrl(video);
                 photo.setUrl(clipContent);
                 photo.setTime(System.currentTimeMillis());
-            } catch (IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
+            } catch (NullPointerException | IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
                 exception.printStackTrace();
             }
         }
