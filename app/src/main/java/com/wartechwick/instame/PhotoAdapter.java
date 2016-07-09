@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.wartechwick.instame.UI.OnPhotoClickListener;
+import com.wartechwick.instame.ui.OnPhotoClickListener;
 import com.wartechwick.instame.db.Photo;
 
 import java.util.List;

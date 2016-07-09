@@ -1,4 +1,4 @@
-package com.wartechwick.instame.UI;
+package com.wartechwick.instame.ui;
 
 import android.view.View;
 import android.widget.ImageView;

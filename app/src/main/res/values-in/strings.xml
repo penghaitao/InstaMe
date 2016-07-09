@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InstantMe</string>
+    <string name="app_name">InstantSave</string>
     <string name="action_feedback">Masukan</string>
     <string name="action_help">Bantuan</string>
     <string name="action_rate">Mendukung Kami</string>
@@ -8,7 +8,7 @@
     <string name="go_to_instagram">PILIH MENU INSTAGRAM</string>
     <string name="image_saved">Fototelahtersimpan</string>
     <string name="image_saved_already">Fototelahtersimpan, silahkanlihatdalamalbumu</string>
-    <string name="insta_help">Tigalangkahuntukmendapatkanfoto/video melalui Instagram\n\n 1. BukaInstantMe \n\n 2. Bukaakuninstragam, pilih menu Copy Share padatautanfoto/video yang kamusukai \n\n 3. KembalikeInstantMedanakanterlihatdaftarfoto/video.Kamudapatmenyimpan, berbagiataumenggunakannyasebagai wallpaper</string>
+    <string name="insta_help">Tigalangkahuntukmendapatkanfoto/video melalui Instagram\n\n 1. BukaInstantSave \n\n 2. Bukaakuninstragam, pilih menu Copy Share padatautanfoto/video yang kamusukai \n\n 3. KembalikeInstantSavedanakanterlihatdaftarfoto/video.Kamudapatmenyimpan, berbagiataumenggunakannyasebagai wallpaper</string>
     <string name="need_permission">Pastikankamumemilikikapasitas yang cukupuntukpenyimpanankoleksifotomu</string>
     <string name="ok">OK</string>
     <string name="got_it">OK</string>
@@ -18,5 +18,8 @@
     <string name="video_start_saving">Dalam proses mengunduh…mohonmenunggu</string>
     <string name="watch_demo">LIHAT DEMO VIDEO</string>
     <string name="welcome">SelamatDatang</string>
+    <string name="rate_now">IYA NIH</string>
+    <string name="not_now">tidak sekarang </string>
+    <string name="support_message">PemeringkatanInstantSave</string>
 
 </resources>

@@ -6,7 +6,7 @@ package com.wartechwick.instame;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.wartechwick.instame.Sync.HttpClient;
+import com.wartechwick.instame.sync.HttpClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

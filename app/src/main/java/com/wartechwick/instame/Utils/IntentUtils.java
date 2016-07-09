@@ -1,4 +1,4 @@
-package com.wartechwick.instame.Utils;
+package com.wartechwick.instame.utils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.wartechwick.instame.MainActivity;
 import com.wartechwick.instame.PlayActivity;
 import com.wartechwick.instame.R;
-import com.wartechwick.instame.Sync.HttpClient;
+import com.wartechwick.instame.sync.HttpClient;
 
 import java.io.File;
 

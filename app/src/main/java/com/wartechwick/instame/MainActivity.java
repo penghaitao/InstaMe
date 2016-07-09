@@ -34,12 +34,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.wartechwick.instame.Sync.HttpClient;
-import com.wartechwick.instame.UI.OnPhotoClickListener;
-import com.wartechwick.instame.Utils.Constant;
-import com.wartechwick.instame.Utils.IntentUtils;
-import com.wartechwick.instame.Utils.Utils;
 import com.wartechwick.instame.db.Photo;
+import com.wartechwick.instame.sync.HttpClient;
+import com.wartechwick.instame.ui.OnPhotoClickListener;
+import com.wartechwick.instame.utils.Constant;
+import com.wartechwick.instame.utils.IntentUtils;
+import com.wartechwick.instame.utils.Utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -55,7 +55,7 @@ import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private static final String tag = "MainActivity";
+    private static final String TAG = "MainActivity";
     private ClipboardManager clipboard;
     private List<Photo> photoList;
     private PhotoAdapter gramAdapter;
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String lastUrl = null;
     boolean isFirstOpen = false;
     RealmConfiguration config;
+    Realm realm;
     private int progressbarNum = 0;
 
     // Storage Permissions
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
         }
         config = new RealmConfiguration.Builder(MainActivity.this).build();
+        realm = Realm.getInstance(config);
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
 //        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
         mAdView.loadAd(adRequest);
+
     }
 
     private TextView getActionBarTextView() {
@@ -179,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupAdapter() {
-        Realm realm = Realm.getInstance(config);
         RealmResults<Photo> result2 = realm.where(Photo.class)
                 .findAll();
         if (result2 != null && result2.size() > 0) {
@@ -292,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void delete(int position) {
-        Realm realm = Realm.getInstance(config);
         realm.beginTransaction();
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
@@ -391,7 +392,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String reminder = null;
             if (gram != null) {
                 photoList.add(0, gram);
-                Realm realm = Realm.getInstance(config);
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(gram);
                 realm.commitTransaction();
@@ -416,6 +416,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setupAdapter();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override
@@ -503,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/hya4gYWrZmo")));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/FMOW1c_6j6I")));
                     }
                 })
                 .setNegativeButton(R.string.got_it, null)

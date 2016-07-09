@@ -1,0 +1,25 @@
+
+<resources>
+<string name="app_name">InstantSave</string>
+<string name="action_feedback">意見反饋</string>
+<string name="action_help">幫助</string>
+<string name="action_rate">支持我們</string>
+<string name="action_settings">設置</string>
+<string name="cancel">取消</string>
+<string name="go_to_instagram">去Instagram</string>
+<string name="got_it">知道了</string>
+<string name="image_saved">暫無圖片被保存</string>
+<string name="image_saved_already">圖片下載成功，你可以去相冊中查看</string>
+<string name="insta_help">只需要3步即可從Instagram中下載到你喜歡的圖片或者視頻（第一步和第二步可以互換））\n\n 1.打開InstantSave \n\n 2.打開Instagram 點擊你喜歡的照片或者視頻的右上角的三個點，選擇“複製網址”\n\n 3.回到InstantSave 你將看到你喜歡的圖片和視頻已經在列表中了，你可以保存，分享或者設置成壁紙。</string>
+<string name="need_permission">我們需要獲得訪問設備上存儲空間的權限，才能夠保存圖片</string>
+<string name="ok">好的</string>
+<string name="permission_granted">現在已經可以隨心所欲的保存、分享和設置壁紙了，祝你使用愉快</string>
+<string name="rate_now">好的，去打分</string>
+<string name="support_message">如果你喜歡使用本應用，請給我們五星好評好嗎？</string>
+<string name="video_saved">視頻下載成功</string>
+<string name="video_saved_already">視頻已經保存成功，請在相冊中查看</string>
+<string name="video_start_saving">下載中...請稍後</string>
+<string name="watch_demo">查看演示視頻</string>
+<string name="welcome">歡迎</string>
+<string name="not_now">不了</string>
+</resources>

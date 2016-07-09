@@ -1,4 +1,4 @@
-package com.wartechwick.instame.Utils;
+package com.wartechwick.instame.utils;
 
 /**
  * Created by penghaitao on 2015/12/17.

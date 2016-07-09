@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.VideoView;
 
-import com.wartechwick.instame.Utils.Utils;
+import com.wartechwick.instame.utils.Utils;
 
 import java.io.File;
 

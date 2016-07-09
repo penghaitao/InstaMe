@@ -1,4 +1,4 @@
-package com.wartechwick.instame.Utils;
+package com.wartechwick.instame.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

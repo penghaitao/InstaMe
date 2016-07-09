@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">InstantSave</string>
+    <string name="action_feedback">意见反馈</string>
+    <string name="action_help">帮助</string>
+    <string name="action_rate">支持我们</string>
+    <string name="action_settings">设置</string>
+    <string name="cancel">取消</string>
+    <string name="go_to_instagram">去Instagram</string>
+    <string name="got_it">知道了</string>
+    <string name="image_saved">暂无图片被保存</string>
+    <string name="image_saved_already">图片下载成功，你可以去相册中查看</string>
+    <string name="insta_help">只需要3步即可从Instagram中下载到你喜欢的图片或者视频（第一步和第二步可以互换））\n\n 1.打开InstantSave \n\n 2.打开Instagram 点击你喜欢的照片或者视频的右上角的三个点，选择“复制网址”\n\n 3.回到InstantSave 你将看到你喜欢的图片和视频已经在列表中了，你可以保存，分享或者设置成壁纸。</string>
+    <string name="need_permission">我们需要获得访问设备上存储空间的权限，才能够保存图片</string>
+    <string name="ok">好的</string>
+    <string name="permission_granted">现在已经可以随心所欲的保存、分享和设置壁纸了，祝你使用愉快</string>
+    <string name="rate_now">好的，去打分</string>
+    <string name="support_message">如果你喜欢使用本应用，请给我们五星好评好吗？</string>
+    <string name="video_saved">视频下载成功</string>
+    <string name="video_saved_already">视频已经保存成功，请在相册中查看</string>
+    <string name="video_start_saving">下载中...请稍后</string>
+    <string name="watch_demo">查看演示视频</string>
+    <string name="welcome">欢迎</string>
+    <string name="not_now">不了</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.wartechwick.instame.Sync;
+package com.wartechwick.instame.sync;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,8 +14,8 @@ import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.wartechwick.instame.Utils.Constant;
-import com.wartechwick.instame.Utils.Utils;
+import com.wartechwick.instame.utils.Constant;
+import com.wartechwick.instame.utils.Utils;
 import com.wartechwick.instame.db.Photo;
 
 import org.jsoup.Jsoup;
@@ -103,6 +103,7 @@ public class HttpClient {
                 photo.setTime(System.currentTimeMillis());
             } catch (NullPointerException | IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
                 exception.printStackTrace();
+                //// TODO: 2016/7/7 add download failed hint 
             }
         }
         return photo;

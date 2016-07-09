@@ -1,4 +1,4 @@
-package com.wartechwick.instame.UI;
+package com.wartechwick.instame.ui;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
