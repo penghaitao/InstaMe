@@ -49,7 +49,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -78,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String clipContent = null;
     String lastUrl = null;
     boolean isFirstOpen = false;
-    RealmConfiguration config;
     Realm realm;
+    App app;
     private int progressbarNum = 0;
 
     // Storage Permissions
@@ -104,8 +103,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "debug", Toast.LENGTH_SHORT).show();
             mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
         }
-        config = new RealmConfiguration.Builder(MainActivity.this).build();
-        realm = Realm.getInstance(config);
+        app = (App) getApplicationContext();
+        realm = app.getDBHandler().getRealmInstance();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
 //        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
@@ -294,7 +293,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void delete(int position) {
-        realm.beginTransaction();
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
         result = result.sort("time", Sort.DESCENDING);
@@ -303,13 +301,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             position = result.size()-1;
         }
         logFirebaseEvent("DELETE", "DELETE");
-        Photo photo = result.get(position);
+        final Photo photo = result.get(position);
         if (photo.getUrl().equals(lastUrl)) {
             ClipData clipData = ClipData.newPlainText("", "");
             clipboard.setPrimaryClip(clipData);
         }
-        photo.deleteFromRealm();
-        realm.commitTransaction();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                photo.deleteFromRealm();
+            }
+        });
         photoList.remove(position);
         gramAdapter.notifyItemRemoved(position);
         gramAdapter.notifyItemRangeChanged(position, gramAdapter.getItemCount());
@@ -388,13 +390,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected String doInBackground(String... params) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).commit();
             lastUrl = params[0];
-            Photo gram = HttpClient.getPhoto(MainActivity.this, params[0]);
+            final Photo gram = HttpClient.getPhoto(MainActivity.this, params[0]);
             String reminder = null;
             if (gram != null) {
                 photoList.add(0, gram);
-                realm.beginTransaction();
-                realm.copyToRealmOrUpdate(gram);
-                realm.commitTransaction();
+                final Realm mRealm = app.getDBHandler().getRealmInstance();
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        mRealm.copyToRealmOrUpdate(gram);
+                    }
+                });
+                mRealm.close();
             } else {
                 reminder = getString(R.string.app_name);
             }
