@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">InstantSave</string>
+    <string name="action_feedback">Обратная связь</string>
+    <string name="action_help">помощь</string>
+    <string name="action_rate">Оцените это</string>
+    <string name="action_settings">настройки</string>
+    <string name="cancel">Отменить</string>
+    <string name="go_to_instagram">Открыть Instagram</string>
+    <string name="got_it">Понял</string>
+    <string name="image_saved">Видео успешно сохранено</string>
+    <string name="image_saved_already">Видео успешно сохранено</string>
+    <string name="insta_help">3 шага, чтобы загрузить фото / видео из Instagram (1­го и 2­го этапов могут быть заменены вместе)\n\n  1. Откройте InstantSave\n\n  2. Откройте Instagram, выберите Копировать URL фото / видео, которое вы хотите сохранить\n\n  3. Назад к InstantSave , вы увидите фото / видео в списке . Вы можете сэкономить , акции или установить обои , как вы хотите</string>
+    <string name="need_permission">Вам необходимо разрешить доступ к хранению , поэтому мы можем сохранить изображение</string>
+    <string name="not_now">не сейчас</string>
+    <string name="ok">ОК</string>
+    <string name="permission_granted">Разрешаю , попытайтесь загрузить снова</string>
+    <string name="rate_now">OK</string>
+    <string name="support_message">Оцените это</string>
+    <string name="video_saved">Видео успешно сохранено</string>
+    <string name="video_saved_already">Видео успешно сохранено</string>
+    <string name="video_start_saving">Загрузка, подождите ...</string>
+    <string name="watch_demo">Смотреть демо­ролик</string>
+    <string name="welcome">Добро пожаловат</string>
+</resources>
