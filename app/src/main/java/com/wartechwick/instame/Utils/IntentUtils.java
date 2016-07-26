@@ -91,6 +91,13 @@ public class IntentUtils {
         snackbar.show();
     }
 
+    public static void showSnackbarWithWarning(int resId, Activity context, int duration) {
+        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundResource(R.color.warning_amber);
+        snackbar.show();
+    }
+
     public static void sendFeedback(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "wartechwick@gmail.com", null));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"wartechwick@gmail.com"});

@@ -22,4 +22,6 @@
     <string name="watch_demo">查看演示视频</string>
     <string name="welcome">欢迎</string>
     <string name="not_now">不了</string>
+    <string name="thanks">非常感谢</string>
+    <string name="save_failed">图片下载失败</string>
 </resources>

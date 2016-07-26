@@ -34,4 +34,6 @@
     <string name="title_activity_play" translatable="false">PlayActivity</string>
 
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-7166408441889547/8597886315</string>
+    <string name="thanks">thanks</string>
+    <string name="save_failed">Image save failed</string>
 </resources>

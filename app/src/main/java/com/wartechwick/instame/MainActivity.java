@@ -34,6 +34,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.kobakei.ratethisapp.RateThisApp;
 import com.wartechwick.instame.db.Photo;
 import com.wartechwick.instame.sync.HttpClient;
 import com.wartechwick.instame.ui.OnPhotoClickListener;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Realm realm;
     App app;
     private int progressbarNum = 0;
+    ClipboardManager.OnPrimaryClipChangedListener mPrimaryClipChangedListener = null;
 
     // Storage Permissions
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        //todo tap to edit it
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
         }
         app = (App) getApplicationContext();
-        realm = app.getDBHandler().getRealmInstance();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
 //        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
@@ -125,19 +126,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showHelpMessage(R.string.welcome);
         }
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
+        mPrimaryClipChangedListener = new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
             public void onPrimaryClipChanged() {
                 checkClipboard();
             }
-        });
+        };
+        clipboard.addPrimaryClipChangedListener(mPrimaryClipChangedListener);
         checkClipboard();
 //        verifyStoragePermissions();
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
         mAdView.loadAd(adRequest);
+        //test
+//        new LoadUrlTask().execute("https://www.instagram.com/p/BIQuaKpDWRY/");
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Monitor launch times and interval from installation
+        RateThisApp.onStart(this);
+        // If the criteria is satisfied, "Rate this app" dialog will be shown
+        RateThisApp.showRateDialogIfNeeded(this);
     }
 
     private TextView getActionBarTextView() {
@@ -159,8 +172,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void checkClipboard() {
-        if (clipboard.getPrimaryClip() != null && clipboard.getPrimaryClip().getItemAt(0) != null && clipboard.getPrimaryClip().getItemAt(0).getText() != null) {
-            clipContent = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
+        ClipData clipData = clipboard.getPrimaryClip();
+        if (clipData != null && clipData.getItemAt(0) != null && clipData.getItemAt(0).getText() != null && !clipData.getItemAt(0).getText().equals(lastUrl)) {
+            clipContent = clipData.getItemAt(0).getText().toString();
+//            Log.i("pp", "lalalalalala---------------"+clipContent+"---last"+lastUrl);
             if (clipContent.contains(Constant.INSTAGRAM_BASE_URL)) {
                 boolean isExist = false;
                 for (Photo photo : photoList) {
@@ -173,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (emptyView.getVisibility() == View.VISIBLE) {
                         undoSetEmptyView();
                     }
+                    lastUrl = clipContent;
                     new LoadUrlTask().execute(clipContent);
                     logFirebaseEvent("LOAD", "LOAD");
                 }
@@ -181,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setupAdapter() {
+        realm = app.getDBHandler().getRealmInstance();
         RealmResults<Photo> result2 = realm.where(Photo.class)
                 .findAll();
         if (result2 != null && result2.size() > 0) {
@@ -293,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void delete(int position) {
+        realm = app.getDBHandler().getRealmInstance();
         RealmResults<Photo> result = realm.where(Photo.class)
                 .findAll();
         result = result.sort("time", Sort.DESCENDING);
@@ -389,9 +407,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... params) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).commit();
-            lastUrl = params[0];
-            final Photo gram = HttpClient.getPhoto(MainActivity.this, params[0]);
             String reminder = null;
+            final Photo gram = HttpClient.getPhoto2(MainActivity.this, params[0]);
             if (gram != null) {
                 photoList.add(0, gram);
                 final Realm mRealm = app.getDBHandler().getRealmInstance();
@@ -415,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressBar.setVisibility(View.INVISIBLE);
             }
             if (result != null) {
-//                IntentUtils.showSnackbar(R.string.app_name, MainActivity.this, Snackbar.LENGTH_SHORT);
+                IntentUtils.showSnackbarWithWarning(R.string.save_failed, MainActivity.this, Snackbar.LENGTH_SHORT);
             }
             else if (gramAdapter != null) {
                 gramAdapter.notifyDataSetChanged();
@@ -429,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+//        clipboard.removePrimaryClipChangedListener(mPrimaryClipChangedListener);
     }
 
     @Override
@@ -532,6 +550,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         IntentUtils.rateInstaMe(MainActivity.this);
+                        Toast.makeText(MainActivity.this, R.string.thanks, Toast.LENGTH_SHORT).show();
+
                     }
                 })
                 .setNegativeButton(R.string.not_now, null)
@@ -543,14 +563,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setEmptyView() {
         recyclerView.setVisibility(View.INVISIBLE);
         emptyView.setVisibility(View.VISIBLE);
-//        fab.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
         mAdView.setVisibility(View.GONE);
     }
 
     private void undoSetEmptyView() {
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
-//        fab.setVisibility(View.GONE);//temporary set no visibility
+        fab.setVisibility(View.VISIBLE);//temporary set no visibility
         mAdView.setVisibility(View.VISIBLE);
     }
 

@@ -8,4 +8,5 @@
     <color name="instagram_blue">#4492d8</color>
     <color name="chrome_blue">#5c95f2</color>
     <color name="black_overlay">#66000000</color>
+    <color name="warning_amber">#ffca28</color>
 </resources>

@@ -21,4 +21,6 @@
     <string name="video_start_saving">Загрузка, подождите ...</string>
     <string name="watch_demo">Смотреть демо­ролик</string>
     <string name="welcome">Добро пожаловат</string>
+    <string name="thanks">благодаря</string>
+    <string name="save_failed">Не удалось загрузить фотографии</string>
 </resources>

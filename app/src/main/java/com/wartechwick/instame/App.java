@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.kobakei.ratethisapp.RateThisApp;
 import com.wartechwick.instame.db.DatabaseHandler;
 
 
@@ -16,6 +17,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = this;
+        RateThisApp.Config config = new RateThisApp.Config(7, 20);
+        RateThisApp.init(config);
     }
 
     @NonNull

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -97,14 +98,51 @@ public class HttpClient {
                 if (videoMeta != null) {
                     video = videoMeta.attr("content");
                 }
-                photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
                 photo.setVideoUrl(video);
+                photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
                 photo.setUrl(clipContent);
                 photo.setTime(System.currentTimeMillis());
             } catch (NullPointerException | IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
                 exception.printStackTrace();
-                //// TODO: 2016/7/7 add download failed hint 
             }
+        }
+        return photo;
+    }
+
+    public static Photo getPhoto2(Context context, String clipContent) {
+        Photo photo = null;
+//        Log.i("pp", clipContent);
+        String json = callAPI(Constant.API_BASE_URL+clipContent);
+        Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getDeclaringClass().equals(RealmObject.class);
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .create();
+        try {
+            photo = gson.fromJson(json, Photo.class);
+            if (photo.getHtml() != null && photo.getHtml().contains("video posted")) {
+                String html = HttpClient.callAPI(clipContent);
+                Document doc1 = Jsoup.parse(html);
+                Element videoMeta = doc1.select("meta[property=og:video]").first();
+                String video = null;
+                if (videoMeta != null) {
+                    video = videoMeta.attr("content");
+                }
+                photo.setVideoUrl(video);
+            }
+            photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
+            photo.setUrl(clipContent);
+            photo.setTime(System.currentTimeMillis());
+        } catch (NullPointerException | IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
+            exception.printStackTrace();
         }
         return photo;
     }

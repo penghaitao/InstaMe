@@ -85,14 +85,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="66dp"
         android:layout_marginRight="@dimen/fab_margin"
-        android:src="@drawable/ic_play_circle_outline"
-        android:scaleType="center"
-        android:visibility="gone"
+        android:src="@drawable/ic_photo_camera_white_36dp"
         app:backgroundTint="#ed4956"
         app:layout_anchor="@id/insta_recyler_view"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchorGravity="bottom|right|end"
+        app:layout_behavior="com.wartechwick.instame.ui.ScrollAwareFABBehavior"/>
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

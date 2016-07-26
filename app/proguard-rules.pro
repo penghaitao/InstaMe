@@ -19,6 +19,7 @@
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
 -keep class **$$ViewBinder { *; }
+-keep class android.support.v7.** { *; }
 
 -keepclasseswithmembernames class * {
     @butterknife.* <fields>;

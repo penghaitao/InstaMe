@@ -21,5 +21,7 @@
     <string name="rate_now">IYA NIH</string>
     <string name="not_now">tidak sekarang </string>
     <string name="support_message">PemeringkatanInstantSave</string>
+    <string name="thanks">Terima kasih</string>
+    <string name="save_failed">Foto mendownload gagal</string>
 
 </resources>
