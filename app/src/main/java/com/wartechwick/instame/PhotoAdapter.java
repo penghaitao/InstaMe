@@ -75,43 +75,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         holder.photoImageView.setImageResource(0);
 
         Picasso.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
-//        Picasso.with(mContext)
-//                .load(photo.getThumbnailUrl())
-//                .into(target);
-    }
 
-//    private Target target = new Target() {
-//
-//        @Override
-//        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//
-//                    File file = new File(Utils.getImageDirectory(mContext) + ".jpg");
-//                    try {
-//                        file.createNewFile();
-//                        FileOutputStream ostream = new FileOutputStream(file);
-//                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
-//                        ostream.close();
-////                        IntentUtils.showSnackbar(R.string.image_saved_already, mContext);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            }).start();
-//        }
-//
-//        @Override
-//        public void onBitmapFailed(Drawable errorDrawable) {}
-//
-//        @Override
-//        public void onPrepareLoad(Drawable placeHolderDrawable) {
-//            if (placeHolderDrawable != null) {}
-//        }
-//    };
+//        Glide.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
+    }
 
     @Override
     public int getItemCount() {

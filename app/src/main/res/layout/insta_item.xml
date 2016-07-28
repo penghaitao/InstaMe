@@ -7,7 +7,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#ebebeb">
 
         <ImageView
             android:id="@+id/insta_image"
@@ -35,19 +36,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/content_line_vertical_spacing"
+        android:background="@android:color/white"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/content_line_vertical_spacing">
-
-        <TextView
-            android:id="@+id/author_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/instagram_bold_font"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <ImageView
             android:id="@+id/btn_delete"
@@ -55,6 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/content_line_vertical_spacing"
+            android:paddingTop="@dimen/content_line_vertical_spacing"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/icon_delete"/>
@@ -64,6 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/content_line_vertical_spacing"
+            android:paddingTop="@dimen/content_line_vertical_spacing"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_toLeftOf="@id/btn_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -74,6 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/content_line_vertical_spacing"
+            android:paddingTop="@dimen/content_line_vertical_spacing"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_toLeftOf="@id/btn_wallpaper"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -82,12 +79,29 @@
         <ImageView
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/content_line_vertical_spacing"
+            android:paddingTop="@dimen/content_line_vertical_spacing"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_toLeftOf="@id/btn_share"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/icon_download"/>
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_save"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="@dimen/content_line_vertical_spacing"
+            android:paddingTop="@dimen/content_line_vertical_spacing"
+            android:textColor="@color/instagram_bold_font"
+            android:maxLines="1"
+            android:text="hello"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
     </RelativeLayout>
 

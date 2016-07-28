@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        textView.setTypeface(myTypeface);
 //        textView.setGravity(Gravity.CENTER);
         photoList = new ArrayList<Photo>();
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
-        recyclerView.addItemDecoration(itemDecoration);
+//        RecyclerView.ItemDecoration itemDecoration = new
+//                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+//        recyclerView.addItemDecoration(itemDecoration);
         fab.setOnClickListener(this);
         gotoinstagramButton.setOnClickListener(this);
         setupAdapter();

@@ -29,3 +29,5 @@
     @butterknife.* <methods>;
 }
 -keeppackagenames org.jsoup.nodes
+
+#-keep public class * implements com.bumptech.glide.module.GlideModule
