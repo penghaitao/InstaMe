@@ -1,10 +1,14 @@
 package com.wartechwick.instame.utils;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +20,8 @@ import java.io.IOException;
  * Created by penghaitao on 2015/12/21.
  */
 public class Utils {
+
+    final public static int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
     public static void init(Context context) {
         mkDirs(getImageDirectory(context));
@@ -67,6 +73,31 @@ public class Utils {
         }
         Uri contentUri = Uri.fromFile(file);
         return contentUri;
+    }
+
+    public static boolean verifyStoragePermissions(Activity context) {
+
+        int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
+//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                                        REQUEST_CODE_ASK_PERMISSIONS);
+//                            }
+//                        });
+//                return false;
+//            }
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+            return false;
+        } else {
+            Utils.init(context);
+            return true;
+        }
+
     }
 
 }

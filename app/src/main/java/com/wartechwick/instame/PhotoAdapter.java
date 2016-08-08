@@ -104,6 +104,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             wallPaperButton.setOnClickListener(this);
             deleteButton.setOnClickListener(this);
             playView.setOnClickListener(this);
+            photoImageView.setOnClickListener(this);
         }
 
         @Override

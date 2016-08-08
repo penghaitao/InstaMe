@@ -1,6 +1,5 @@
-package com.wartechwick.instame;
+package com.wartechwick.instame.activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -13,8 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +32,11 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kobakei.ratethisapp.RateThisApp;
+import com.sdsmdg.tastytoast.TastyToast;
+import com.wartechwick.instame.App;
+import com.wartechwick.instame.BuildConfig;
+import com.wartechwick.instame.PhotoAdapter;
+import com.wartechwick.instame.R;
 import com.wartechwick.instame.db.Photo;
 import com.wartechwick.instame.sync.HttpClient;
 import com.wartechwick.instame.ui.OnPhotoClickListener;
@@ -84,17 +86,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ClipboardManager.OnPrimaryClipChangedListener mPrimaryClipChangedListener = null;
 
     // Storage Permissions
-    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+//    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+//    private static String[] PERMISSIONS_STORAGE = {
+//            Manifest.permission.READ_EXTERNAL_STORAGE,
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//    };
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //todo tap to edit it
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -235,6 +236,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.insta_play:
                         play(position);
                         break;
+                    case R.id.insta_image:
+                        if (photoList.get(position).getVideoUrl() == null) {
+                            logFirebaseEvent("VIEW", "VIEW");
+                            String fileName = getFileName(position);
+                            IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailLargeUrl(), fileName);
+                        }
+                        break;
                 }
             }
         };
@@ -256,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void save(int position, ImageView itemView) {
-        if (verifyStoragePermissions()) {
+        if (Utils.verifyStoragePermissions(this)) {
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
@@ -266,23 +274,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!file.exists()) {
                     Uri uri = Utils.saveImage(itemView, filename, this);
                     if (uri != null) {
-                        IntentUtils.showSnackbar(R.string.image_saved, this, Snackbar.LENGTH_SHORT);
+                        TastyToast.makeText(app, getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                     }
                 } else {
-                    IntentUtils.showSnackbar(R.string.image_saved_already, this, Snackbar.LENGTH_SHORT);
+                    TastyToast.makeText(app, getResources().getString(R.string.image_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 }
             } else {
                 if (!file.exists()) {
                     new SaveVideoTask(false).execute(videoUrl, filename);
                 } else {
-                    IntentUtils.showSnackbar(R.string.video_saved_already, this, Snackbar.LENGTH_SHORT);
+                    TastyToast.makeText(app, getResources().getString(R.string.video_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 }
             }
         }
     }
 
     private void share(int position, ImageView itemView) {
-        if (verifyStoragePermissions()) {
+        if (Utils.verifyStoragePermissions(this)) {
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
@@ -302,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void wallpaper(int position, ImageView itemView) {
-        if (verifyStoragePermissions()) {
+        if (Utils.verifyStoragePermissions(this)) {
             String filename = getFileName(position);
             logFirebaseEvent(filename, "WALLPAPER");
             IntentUtils.setWallPaper(itemView, filename, MainActivity.this);
@@ -355,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    class SaveVideoTask extends AsyncTask<String, Integer, String> {
+    class SaveVideoTask extends AsyncTask<String, Integer, Boolean> {
 
         private ProgressDialog progressBar;
         private Boolean needShare = false;
@@ -379,15 +387,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Boolean s) {
             progressBar.dismiss();
+            if (s) {
+                TastyToast.makeText(app, getResources().getString(R.string.video_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+            } else {
+                TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+            }
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            IntentUtils.saveVideoOrShare(MainActivity.this, params[0], params[1], needShare);
-            IntentUtils.showSnackbar(R.string.video_saved, MainActivity.this, Snackbar.LENGTH_SHORT);
-            return null;
+        protected Boolean doInBackground(String... params) {
+            Uri uri = IntentUtils.saveVideoOrShare(MainActivity.this, params[0], params[1], needShare);
+            boolean isSuccess = true;
+            if (uri == null) {
+                isSuccess = false;
+            }
+            return isSuccess;
         }
     }
 
@@ -432,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressBar.setVisibility(View.INVISIBLE);
             }
             if (result != null) {
-                IntentUtils.showSnackbarWithWarning(R.string.save_failed, MainActivity.this, Snackbar.LENGTH_SHORT);
+                TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
             else if (gramAdapter != null) {
                 gramAdapter.notifyDataSetChanged();
@@ -480,12 +496,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_CODE_ASK_PERMISSIONS:
+            case Utils.REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    IntentUtils.showSnackbar(R.string.permission_granted, this, Snackbar.LENGTH_LONG);
+                    TastyToast.makeText(app, getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                     Utils.init(this);
                 } else {
-                    IntentUtils.showSnackbar(R.string.need_permission, this, Snackbar.LENGTH_LONG);
+                    TastyToast.makeText(app, getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);
                 }
                 break;
             default:
@@ -493,30 +509,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public boolean verifyStoragePermissions() {
-
-        int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
-//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                                        REQUEST_CODE_ASK_PERMISSIONS);
-//                            }
-//                        });
-//                return false;
-//            }
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_CODE_ASK_PERMISSIONS);
-            return false;
-        } else {
-            Utils.init(this);
-            return true;
-        }
-
-    }
+//    public boolean verifyStoragePermissions() {
+//
+//        int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
+////            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+////                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
+////                        new DialogInterface.OnClickListener() {
+////                            @Override
+////                            public void onClick(DialogInterface dialog, int which) {
+////                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+////                                        REQUEST_CODE_ASK_PERMISSIONS);
+////                            }
+////                        });
+////                return false;
+////            }
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    REQUEST_CODE_ASK_PERMISSIONS);
+//            return false;
+//        } else {
+//            Utils.init(this);
+//            return true;
+//        }
+//
+//    }
 
 //    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
 //        new AlertDialog.Builder(MainActivity.this)

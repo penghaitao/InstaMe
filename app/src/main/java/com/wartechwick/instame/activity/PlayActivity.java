@@ -1,11 +1,14 @@
-package com.wartechwick.instame;
+package com.wartechwick.instame.activity;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.VideoView;
 
+import com.sdsmdg.tastytoast.TastyToast;
+import com.wartechwick.instame.R;
 import com.wartechwick.instame.utils.Utils;
 
 import java.io.File;
@@ -14,10 +17,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class PlayActivity extends Activity{
+public class PlayActivity extends AppCompatActivity {
 
 
     @Bind(R.id.video_view) VideoView gramVideoView;
+    ProgressDialog progDailog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +41,15 @@ public class PlayActivity extends Activity{
         gramVideoView.seekTo(100);
         gramVideoView.requestFocus();
         gramVideoView.start();
+        TastyToast.makeText(getApplicationContext(), "Loading...", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
+
         gramVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
             }
+
+
         });
 
     }

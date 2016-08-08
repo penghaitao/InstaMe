@@ -9,8 +9,8 @@ android {
         applicationId "com.wartechwick.instame"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 20160728
-        versionName "1.4.6"
+        versionCode 20160807
+        versionName "1.4.9"
     }
     buildTypes {
         release {
@@ -38,6 +38,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'io.github.kobakei:ratethisapp:1.0.5'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.github.chrisbanes:PhotoView:1.2.7'
+    compile 'com.sdsmdg.tastytoast:tastytoast:0.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -5,13 +5,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.widget.ImageView;
 
-import com.wartechwick.instame.MainActivity;
-import com.wartechwick.instame.PlayActivity;
-import com.wartechwick.instame.R;
+import com.wartechwick.instame.activity.MainActivity;
+import com.wartechwick.instame.activity.PhotoActivity;
+import com.wartechwick.instame.activity.PlayActivity;
 import com.wartechwick.instame.sync.HttpClient;
 
 import java.io.File;
@@ -56,19 +54,27 @@ public class IntentUtils {
         context.startActivity(i);
     }
 
-    public static void playVideo(Context context, String videoUrl, String filename) {
+    public static void playVideo(Activity context, String videoUrl, String filename) {
         Intent intent = new Intent(context, PlayActivity.class);
         intent.putExtra("videoUrl", videoUrl);
         intent.putExtra("filename", filename);
         context.startActivity(intent);
     }
 
-    public static void saveVideoOrShare(Activity context, String videoUrl, String filename, Boolean needShare) {
+    public static void viewImage(Context context, String url, String fileName) {
+        Intent intent = new Intent(context, PhotoActivity.class);
+        intent.putExtra("photourl", url);
+        intent.putExtra("filename", fileName);
+        context.startActivity(intent);
+    }
+
+    public static Uri saveVideoOrShare(Activity context, String videoUrl, String filename, Boolean needShare) {
         Uri uri = HttpClient.loadVideo(videoUrl, filename, context);
         IntentUtils.savetoAlbum(uri, context);
         if (needShare) {
             shareVideo(uri, context);
         }
+        return uri;
     }
 
     public static void shareVideo(Uri uri, Activity context) {
@@ -84,19 +90,19 @@ public class IntentUtils {
         context.sendBroadcast(mediaScanIntent);
     }
 
-    public static void showSnackbar(int resId, Activity context, int duration) {
-        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundResource(R.color.colorAccent);
-        snackbar.show();
-    }
-
-    public static void showSnackbarWithWarning(int resId, Activity context, int duration) {
-        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundResource(R.color.warning_amber);
-        snackbar.show();
-    }
+//    public static void showSnackbar(int resId, Activity context, int duration) {
+//        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
+//        View snackbarView = snackbar.getView();
+//        snackbarView.setBackgroundResource(R.color.colorAccent);
+//        snackbar.show();
+//    }
+//
+//    public static void showSnackbarWithWarning(int resId, Activity context, int duration) {
+//        Snackbar snackbar = Snackbar.make(context.findViewById(android.R.id.content), resId, duration);
+//        View snackbarView = snackbar.getView();
+//        snackbarView.setBackgroundResource(R.color.warning_amber);
+//        snackbar.show();
+//    }
 
     public static void sendFeedback(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "wartechwick@gmail.com", null));
