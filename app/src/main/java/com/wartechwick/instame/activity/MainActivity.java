@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,16 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.wartechwick.instame.App;
-import com.wartechwick.instame.BuildConfig;
 import com.wartechwick.instame.PhotoAdapter;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.db.Photo;
@@ -85,14 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int progressbarNum = 0;
     ClipboardManager.OnPrimaryClipChangedListener mPrimaryClipChangedListener = null;
 
-    // Storage Permissions
-//    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-//    private static String[] PERMISSIONS_STORAGE = {
-//            Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.WRITE_EXTERNAL_STORAGE
-//    };
-
-    private FirebaseAnalytics mFirebaseAnalytics;
+//    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,11 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
         setSupportActionBar(mToolBar);
         getActionBarTextView();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(this, "debug", Toast.LENGTH_SHORT).show();
-            mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
-        }
+//        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         app = (App) getApplicationContext();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -124,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isFirstOpen = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getResources().getString(R.string.first_open), true);
         if (isFirstOpen) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(getResources().getString(R.string.first_open), false).commit();
-            showHelpMessage(R.string.welcome);
+            Utils.showHelpMessage(this, R.string.welcome);
         }
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         mPrimaryClipChangedListener = new ClipboardManager.OnPrimaryClipChangedListener() {
@@ -191,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     lastUrl = clipContent;
                     new LoadUrlTask().execute(clipContent);
-                    logFirebaseEvent("LOAD", "LOAD");
+                    app.logFirebaseEvent("LOAD", "LOAD");
                 }
             }
         }
@@ -238,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.insta_image:
                         if (photoList.get(position).getVideoUrl() == null) {
-                            logFirebaseEvent("VIEW", "VIEW");
+                            app.logFirebaseEvent("VIEW", "VIEW");
                             String fileName = getFileName(position);
                             IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailLargeUrl(), fileName);
                         }
@@ -268,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
-            logFirebaseEvent(filename, "SAVE");
+            app.logFirebaseEvent(filename, "SAVE");
             File file = new File(Utils.getImageDirectory(this) + filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
@@ -294,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
-            logFirebaseEvent(filename, "SHARE");
+            app.logFirebaseEvent(filename, "SHARE");
             if (videoUrl == null) {
                 IntentUtils.shareImage(itemView, filename, this);
             } else {
@@ -312,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void wallpaper(int position, ImageView itemView) {
         if (Utils.verifyStoragePermissions(this)) {
             String filename = getFileName(position);
-            logFirebaseEvent(filename, "WALLPAPER");
+            app.logFirebaseEvent(filename, "WALLPAPER");
             IntentUtils.setWallPaper(itemView, filename, MainActivity.this);
         }
     }
@@ -326,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (position>= result.size()) {
             position = result.size()-1;
         }
-        logFirebaseEvent("DELETE", "DELETE");
+        app.logFirebaseEvent("DELETE", "DELETE");
         final Photo photo = result.get(position);
         if (photo.getUrl().equals(lastUrl)) {
             ClipData clipData = ClipData.newPlainText("", "");
@@ -480,14 +465,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
-                showHelpMessage(R.string.app_name);
+                Utils.showHelpMessage(this, R.string.app_name);
                 break;
             case R.id.action_feedback:
                 IntentUtils.sendFeedback(this);
                 break;
             case R.id.action_rate:
-                showSupportMessage();
-                logFirebaseEvent("SUPPORT", "SUPPORT");
+                Utils.showSupportMessage(this);
+                app.logFirebaseEvent("SUPPORT", "SUPPORT");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -509,73 +494,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    public boolean verifyStoragePermissions() {
-//
-//        int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//        if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
-////            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-////                showMessageOKCancel("You need to allow access to your storage, So we can save the picture",
-////                        new DialogInterface.OnClickListener() {
-////                            @Override
-////                            public void onClick(DialogInterface dialog, int which) {
-////                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-////                                        REQUEST_CODE_ASK_PERMISSIONS);
-////                            }
-////                        });
-////                return false;
-////            }
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    REQUEST_CODE_ASK_PERMISSIONS);
-//            return false;
-//        } else {
-//            Utils.init(this);
-//            return true;
-//        }
-//
-//    }
-
-//    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-//        new AlertDialog.Builder(MainActivity.this)
-//                .setMessage(message)
-//                .setPositiveButton(R.string.ok, okListener)
-//                .setNegativeButton(R.string.cancel, null)
-//                .create()
-//                .show();
-//    }
-
-    private void showHelpMessage(int titleId) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle(titleId)
-                .setMessage(R.string.insta_help)
-                .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://youtu.be/FMOW1c_6j6I")));
-                    }
-                })
-                .setNegativeButton(R.string.got_it, null)
-                .create()
-                .show();
-    }
-
-    private void showSupportMessage() {
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle(R.string.action_rate)
-                .setMessage(R.string.support_message)
-                .setPositiveButton(R.string.rate_now, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        IntentUtils.rateInstaMe(MainActivity.this);
-                        Toast.makeText(MainActivity.this, R.string.thanks, Toast.LENGTH_SHORT).show();
-
-                    }
-                })
-                .setNegativeButton(R.string.not_now, null)
-                .create()
-                .show();
-
-    }
-
     private void setEmptyView() {
         recyclerView.setVisibility(View.INVISIBLE);
         emptyView.setVisibility(View.VISIBLE);
@@ -591,25 +509,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void gotoInstagram() {
-        PackageManager manager = getPackageManager();
-        Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
-        logFirebaseEvent("GOTO", "GOTO");
-        if (i == null) {
-            //throw new PackageManager.NameNotFoundException();
-            i = new Intent(Intent.ACTION_VIEW);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.setData(Uri.parse("market://details?id=" + "com.instagram.android"));
-            startActivity(i);
-        } else {
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-            startActivity(i);
-        }
-    }
-
-    private void logFirebaseEvent(String name, String type) {
-        Bundle params = new Bundle();
-        params.putString("FILE_NAME", name);
-        mFirebaseAnalytics.logEvent(type, params);
+        app.logFirebaseEvent("GOTO", "GOTO");
+        IntentUtils.gotoInstagram(this);
     }
 
 }

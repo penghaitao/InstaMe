@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.wartechwick.instame.App;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.utils.Utils;
 
@@ -20,21 +21,17 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
 
     String fileName = "";
     PhotoView photoView;
+    App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-//        ImageView mImageView = (ImageView) findViewById(R.id.iv_photo);
         photoView = (PhotoView) findViewById(R.id.iv_photo);
         String url = getIntent().getExtras().getString("photourl");
         fileName = getIntent().getExtras().getString("filename");
-//        Drawable bitmap = ContextCompat.getDrawable(this, R.drawable.icon_share);
-//        mImageView.setImageDrawable(bitmap);
-//
-//        // The MAGIC happens here!
-//        mAttacher = new PhotoViewAttacher(mImageView);
+        app = (App) getApplicationContext();
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
         final ImageView downloadButton = (ImageView) findViewById(R.id.btn_download);
         downloadButton.setOnClickListener(this);
@@ -56,6 +53,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (Utils.verifyStoragePermissions(this)) {
+            app.logFirebaseEvent(fileName, "SAVE");
             Uri uri = Utils.saveImage(photoView, fileName, this);
             if (uri != null) {
                 TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);

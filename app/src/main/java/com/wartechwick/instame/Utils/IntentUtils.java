@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.ImageView;
 
-import com.wartechwick.instame.activity.MainActivity;
 import com.wartechwick.instame.activity.PhotoActivity;
 import com.wartechwick.instame.activity.PlayActivity;
 import com.wartechwick.instame.sync.HttpClient;
@@ -49,9 +49,17 @@ public class IntentUtils {
     }
 
     public static void gotoAuthorUrl(String url, Context context) {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        context.startActivity(i);
+        String[] urlBits = url.split("/");
+        String name = urlBits[urlBits.length-1];
+        Uri uri = Uri.parse(Constant.INSTAGRAM_PROFILE_BASE_RUL+name);
+        Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+        likeIng.setPackage("com.instagram.android");
+        try {
+            context.startActivity(likeIng);
+        } catch (ActivityNotFoundException e) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(url)));
+        }
     }
 
     public static void playVideo(Activity context, String videoUrl, String filename) {
@@ -75,6 +83,21 @@ public class IntentUtils {
             shareVideo(uri, context);
         }
         return uri;
+    }
+
+    public static void gotoInstagram(Activity activity) {
+        PackageManager manager = activity.getPackageManager();
+        Intent i = manager.getLaunchIntentForPackage("com.instagram.android");
+        if (i == null) {
+            //throw new PackageManager.NameNotFoundException();
+            i = new Intent(Intent.ACTION_VIEW);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setData(Uri.parse("market://details?id=" + "com.instagram.android"));
+            activity.startActivity(i);
+        } else {
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            activity.startActivity(i);
+        }
     }
 
     public static void shareVideo(Uri uri, Activity context) {
@@ -113,7 +136,7 @@ public class IntentUtils {
         activity.startActivity(Intent.createChooser(intent, "Send Email"));
     }
 
-    public static void rateInstaMe(MainActivity activity) {
+    public static void rateInstaMe(Activity activity) {
         Uri uri = Uri.parse("market://details?id=" + activity.getPackageName());
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         // To count with Play market backstack, After pressing back button,
