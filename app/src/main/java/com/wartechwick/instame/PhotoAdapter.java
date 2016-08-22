@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.wartechwick.instame.ui.OnPhotoClickListener;
 import com.wartechwick.instame.db.Photo;
+import com.wartechwick.instame.ui.OnPhotoClickListener;
 
 import java.util.List;
 
@@ -75,7 +75,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         holder.photoImageView.setImageResource(0);
 
         Picasso.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
-
 //        Glide.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
     }
 

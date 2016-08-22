@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isFirstOpen = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getResources().getString(R.string.first_open), true);
         if (isFirstOpen) {
             PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(getResources().getString(R.string.first_open), false).commit();
-            Utils.showHelpMessage(this, R.string.welcome);
+            Utils.showHelpMessage(this, getResources().getString(R.string.welcome));
         }
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         mPrimaryClipChangedListener = new ClipboardManager.OnPrimaryClipChangedListener() {
@@ -465,7 +466,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
-                Utils.showHelpMessage(this, R.string.app_name);
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                String version = pInfo.versionName;
+                Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;
             case R.id.action_feedback:
                 IntentUtils.sendFeedback(this);

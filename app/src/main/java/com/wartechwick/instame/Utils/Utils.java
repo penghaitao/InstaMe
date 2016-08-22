@@ -105,9 +105,9 @@ public class Utils {
 
     }
 
-    public static void showHelpMessage(final Activity activity, int titleId) {
+    public static void showHelpMessage(final Activity activity, String title) {
         new AlertDialog.Builder(activity)
-                .setTitle(titleId)
+                .setTitle(title)
                 .setMessage(R.string.insta_help)
                 .setPositiveButton(R.string.watch_demo, new DialogInterface.OnClickListener() {
                     @Override
