@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -12,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +31,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.kobakei.ratethisapp.RateThisApp;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.wartechwick.instame.App;
+import com.wartechwick.instame.BuildConfig;
 import com.wartechwick.instame.PhotoAdapter;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.db.Photo;
@@ -38,6 +39,7 @@ import com.wartechwick.instame.sync.HttpClient;
 import com.wartechwick.instame.ui.OnPhotoClickListener;
 import com.wartechwick.instame.utils.Constant;
 import com.wartechwick.instame.utils.IntentUtils;
+import com.wartechwick.instame.utils.PreferencesLoader;
 import com.wartechwick.instame.utils.Utils;
 
 import java.io.File;
@@ -123,7 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkClipboard();
 //        verifyStoragePermissions();
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");
+//        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");//old
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-5499259334073863~8369213036");
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
         mAdView.loadAd(adRequest);
         //test
@@ -226,7 +229,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (photoList.get(position).getVideoUrl() == null) {
                             app.logFirebaseEvent("VIEW", "VIEW");
                             String fileName = getFileName(position);
-                            IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailLargeUrl(), fileName);
+                            PreferencesLoader loader = new PreferencesLoader(app);
+                            if (loader.getBoolean(R.string.action_high_resolution, true)) {
+                                IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailLargeUrl(), fileName);
+                            } else {
+                                IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailUrl(), fileName);
+                            }
+                        } else {
+                            play(position);
                         }
                         break;
                 }
@@ -452,10 +462,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (emptyView.getVisibility() == View.VISIBLE) {
+            menu.findItem(R.id.action_delete).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.action_high_resolution);
+        initHighResItemState(item);
         return true;
+    }
+
+    private void initHighResItemState(MenuItem item) {
+        PreferencesLoader loader = new PreferencesLoader(this);
+        item.setChecked(loader.getBoolean(R.string.action_high_resolution, true));
     }
 
     @Override
@@ -466,13 +491,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
-                PackageInfo pInfo = null;
-                try {
-                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                String version = pInfo.versionName;
+                String version = BuildConfig.VERSION_NAME;
                 Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;
             case R.id.action_feedback:
@@ -481,6 +500,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_rate:
                 Utils.showSupportMessage(this);
                 app.logFirebaseEvent("SUPPORT", "SUPPORT");
+                break;
+            case R.id.action_high_resolution:
+                boolean isChecked = !item.isChecked();
+                item.setChecked(isChecked);
+                PreferencesLoader loader = new PreferencesLoader(this);
+                loader.saveBoolean(R.string.action_high_resolution, isChecked);
+                TastyToast.makeText(app, getResources().getString(isChecked
+                        ? R.string.save_high_resolution_on
+                        : R.string.save_high_resolution_off), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                break;
+            case R.id.action_delete:
+                if (photoList.size()>0) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.action_delete_all)
+                            .setMessage(R.string.delete_all_message)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    photoList.removeAll(photoList);
+                                    realm = app.getDBHandler().getRealmInstance();
+                                    realm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.deleteAll();
+                                        }
+                                    });
+                                    setEmptyView();
+                                    gramAdapter.notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton(R.string.not_now, null)
+                            .create()
+                            .show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -507,6 +560,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         emptyView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.GONE);
         mAdView.setVisibility(View.GONE);
+        invalidateOptionsMenu();
     }
 
     private void undoSetEmptyView() {
@@ -514,6 +568,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         emptyView.setVisibility(View.GONE);
         fab.setVisibility(View.VISIBLE);//temporary set no visibility
         mAdView.setVisibility(View.VISIBLE);
+        invalidateOptionsMenu();
     }
 
     private void gotoInstagram() {

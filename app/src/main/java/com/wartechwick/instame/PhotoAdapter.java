@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.wartechwick.instame.db.Photo;
 import com.wartechwick.instame.ui.OnPhotoClickListener;
+import com.wartechwick.instame.utils.PreferencesLoader;
 
 import java.util.List;
 
@@ -28,10 +29,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     private OnPhotoClickListener iPhotoClickListener;
 //    private boolean bVideoIsBeingTouched = false;
 //    private Handler mHandler = new Handler();
+    private PreferencesLoader preferencesLoader;
 
     public PhotoAdapter(Context context, List<Photo> grams) {
         mGrams = grams;
         mContext = context;
+        preferencesLoader = new PreferencesLoader(context);
     }
 
     @Override
@@ -73,8 +76,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
         // Reset the images from the recycled view
         holder.photoImageView.setImageResource(0);
-
-        Picasso.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
+        if (preferencesLoader.getBoolean(R.string.action_high_resolution, true)) {
+            Picasso.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
+        } else {
+            Picasso.with(mContext).load(photo.getThumbnailUrl()).into(holder.photoImageView);
+        }
 //        Glide.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
     }
 

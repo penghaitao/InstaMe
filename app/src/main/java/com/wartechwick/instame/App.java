@@ -15,6 +15,7 @@ public class App extends Application {
 
     public static Context sContext;
     public FirebaseAnalytics mFirebaseAnalytics;
+//    private ClipboardManager clipboard;
 
 
     @Override
@@ -29,6 +30,21 @@ public class App extends Application {
             mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
         }
     }
+
+//    public ClipboardManager getClipboard() {
+//        if (clipboard == null) {
+//            clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//            ClipboardManager.OnPrimaryClipChangedListener mPrimaryClipChangedListener = new ClipboardManager.OnPrimaryClipChangedListener() {
+//                @Override
+//                public void onPrimaryClipChanged() {
+////                    checkClipboard.checkClipboard();
+//                }
+//            };
+//            clipboard.addPrimaryClipChangedListener(mPrimaryClipChangedListener);
+//        }
+//        return clipboard;
+//    }
+
 
     @NonNull
     public DatabaseHandler getDBHandler() {

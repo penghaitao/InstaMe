@@ -130,7 +130,7 @@ public class IntentUtils {
     public static void sendFeedback(Activity activity) {
         Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "wartechwick@gmail.com", null));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"wartechwick@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "InstantMe feedback");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "InstantSave feedback");
         intent.putExtra(Intent.EXTRA_TEXT, "");
 
         activity.startActivity(Intent.createChooser(intent, "Send Email"));

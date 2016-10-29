@@ -23,5 +23,11 @@
     <string name="support_message">PemeringkatanInstantSave</string>
     <string name="thanks">Terima kasih</string>
     <string name="save_failed">Foto mendownload gagal</string>
+    <string name="action_high_resolution">Gambar berkualitas tinggi </string>
+    <string name="save_high_resolution_on">Gambar berkualitas tinggi</string>
+    <string name="save_high_resolution_off">Gambar kualitas normal</string>
+    <string name="action_delete_all">Hapus semua </string>
+    <string name="delete_all_message">Apakah Anda yakin? </string>
+    <string name="yes">IYA NIH </string>
 
 </resources>

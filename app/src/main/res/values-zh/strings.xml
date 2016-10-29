@@ -24,4 +24,10 @@
     <string name="not_now">不了</string>
     <string name="thanks">非常感谢</string>
     <string name="save_failed">图片下载失败</string>
+    <string name="action_high_resolution">高品质图片</string>
+    <string name="save_high_resolution_on">将保存高品质图片</string>
+    <string name="save_high_resolution_off">将保存普通品质图片</string>
+    <string name="action_delete_all">删除所有图片</string>
+    <string name="delete_all_message">你确定吗？</string>
+    <string name="yes">好的</string>
 </resources>

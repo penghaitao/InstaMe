@@ -23,4 +23,10 @@
     <string name="welcome">Добро пожаловат</string>
     <string name="thanks">благодаря</string>
     <string name="save_failed">Не удалось загрузить фотографии</string>
+    <string name="action_high_resolution">Высокое качество изображения</string>
+    <string name="save_high_resolution_on">Высокое качество изображения</string>
+    <string name="save_high_resolution_off">нормальное качество изображения </string>
+    <string name="action_delete_all">Удалить все </string>
+    <string name="delete_all_message">Ты уверен?</string>
+    <string name="yes">ДА</string>
 </resources>

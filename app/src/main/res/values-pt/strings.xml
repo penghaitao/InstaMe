@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">InstantSave</string>
     <string name="action_settings">Settings</string>
     <string name="action_help">Help</string>
     <string name="action_feedback">Feedback</string>
     <string name="action_rate">Support Us</string>
-    <string name="action_delete_all">Delete all</string>
     <string name="welcome">Welcome</string>
     <string name="insta_help">3 Steps to get your favorite photo/video from Instagram(1st and 2nd steps can be swapped)\n\n
         1. Open InstantSave\n\n 2. Open your Instagram, choose Copy Share URL on photo/video you like\n\n 3. Back to InstantSave,
@@ -21,27 +21,20 @@
     <string name="got_it">GOT IT!</string>
     <string name="watch_demo">WATCH DEMO VIDEO</string>
     <string name="go_to_instagram">GO TO INSTAGRAM</string>
-    <string name="last_url" translatable="false">LASTURL</string>
-    <string name="first_open" translatable="false">FIRSTOPEN</string>
 
-    <!--delete all message-->
-    <string name="delete_all_message">Are you sure?</string>
-    <string name="yes">YES</string>
     <!--support message-->
     <string name="support_message">If you enjoy using us, will you rate us 5 stars?</string>
     <string name="not_now">NOT NOW</string>
     <string name="rate_now">YES, RATE NOW</string>
     <!--empty view-->
-    <string name="hint_empty_view" translatable="false">No photo saved yet</string>
-    <string name="no_data_available" translatable="false">Open Instagram to save photo as you like</string>
 
-    <string name="title_activity_play" translatable="false">PlayActivity</string>
 
-    <!--<string name="banner_ad_unit_id" translatable="false">ca-app-pub-7166408441889547/8597886315</string>//old-->
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-5499259334073863/2322679434</string>
     <string name="thanks">thanks</string>
     <string name="save_failed">Image save failed</string>
     <string name="action_high_resolution">High quality image</string>
     <string name="save_high_resolution_on">Save high quality images</string>
     <string name="save_high_resolution_off">Save normal quality images</string>
+    <string name="action_delete_all">Delete all</string>
+    <string name="delete_all_message">Are you sure?</string>
+    <string name="yes">YES</string>
 </resources>
