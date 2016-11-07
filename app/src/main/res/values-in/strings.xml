@@ -29,5 +29,10 @@
     <string name="action_delete_all">Hapus semua </string>
     <string name="delete_all_message">Apakah Anda yakin? </string>
     <string name="yes">IYA NIH </string>
+    <string name="action_about">Tentang</string>
+    <string name="licence">Perpustakaan Sumber Terbuka</string>
+    <string name="share">"Bagikan Aplikasi ini "</string>
+    <string name="rate">Nilai aplikasi ini</string>
+    <string name="version">Versi</string>
 
 </resources>

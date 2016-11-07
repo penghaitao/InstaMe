@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">InstantSave</string>
     <string name="action_feedback">Обратная связь</string>
-    <string name="action_help">помощь</string>
-    <string name="action_rate">Оцените это</string>
+    <string name="action_help">Помощь</string>
+    <string name="action_rate">поддержка</string>
     <string name="action_settings">настройки</string>
     <string name="cancel">Отменить</string>
     <string name="go_to_instagram">Открыть Instagram</string>
@@ -29,4 +29,9 @@
     <string name="action_delete_all">Удалить все </string>
     <string name="delete_all_message">Ты уверен?</string>
     <string name="yes">ДА</string>
+    <string name="rate">Оцените это</string>
+    <string name="share">Поделись этим приложением</string>
+    <string name="version">Версия</string>
+    <string name="licence">Открыть исходные галереи</string>
+    <string name="action_about">ИНФОРМАЦИЯ</string>
 </resources>

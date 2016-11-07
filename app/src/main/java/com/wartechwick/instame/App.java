@@ -13,6 +13,7 @@ import com.wartechwick.instame.db.DatabaseHandler;
 
 public class App extends Application {
 
+    public static boolean uiInForeground = false;
     public static Context sContext;
     public FirebaseAnalytics mFirebaseAnalytics;
 //    private ClipboardManager clipboard;

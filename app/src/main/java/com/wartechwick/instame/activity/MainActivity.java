@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -136,11 +137,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-
+        app.uiInForeground = true;
         // Monitor launch times and interval from installation
         RateThisApp.onStart(this);
         // If the criteria is satisfied, "Rate this app" dialog will be shown
         RateThisApp.showRateDialogIfNeeded(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        app.uiInForeground = false;
     }
 
     private TextView getActionBarTextView() {
@@ -446,11 +453,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (result != null) {
                 TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
-            else if (gramAdapter != null) {
-                gramAdapter.notifyDataSetChanged();
-            } else {
-                setupAdapter();
+            else {
+                if (!app.uiInForeground) {
+                    Toast.makeText(app,getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT).show();
+                }
+                if (gramAdapter != null) {
+                    gramAdapter.notifyDataSetChanged();
+                } else {
+                    setupAdapter();
+                }
             }
+
         }
     }
 
@@ -494,13 +507,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String version = BuildConfig.VERSION_NAME;
                 Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;
-            case R.id.action_feedback:
-                IntentUtils.sendFeedback(this);
+//            case R.id.action_feedback:
+//                IntentUtils.sendFeedback(this);
+//                break;
+            case R.id.action_about:
+                IntentUtils.gotoAbout(this);
                 break;
-            case R.id.action_rate:
-                Utils.showSupportMessage(this);
-                app.logFirebaseEvent("SUPPORT", "SUPPORT");
-                break;
+//            case R.id.action_rate:
+//                Utils.showSupportMessage(this);
+//                app.logFirebaseEvent("SUPPORT", "SUPPORT");
+//                break;
             case R.id.action_high_resolution:
                 boolean isChecked = !item.isChecked();
                 item.setChecked(isChecked);
@@ -518,16 +534,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    photoList.removeAll(photoList);
-                                    realm = app.getDBHandler().getRealmInstance();
-                                    realm.executeTransaction(new Realm.Transaction() {
-                                        @Override
-                                        public void execute(Realm realm) {
-                                            realm.deleteAll();
-                                        }
-                                    });
-                                    setEmptyView();
-                                    gramAdapter.notifyDataSetChanged();
+                                    deleteAll();
                                 }
                             })
                             .setNegativeButton(R.string.not_now, null)
@@ -537,6 +544,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAll() {
+        app.logFirebaseEvent("DELETE_ALL", "DELETE_ALL");
+        photoList.removeAll(photoList);
+        realm = app.getDBHandler().getRealmInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.deleteAll();
+            }
+        });
+        setEmptyView();
+        gramAdapter.notifyDataSetChanged();
     }
 
     @Override

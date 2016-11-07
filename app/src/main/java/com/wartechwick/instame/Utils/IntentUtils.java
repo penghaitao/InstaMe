@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.wartechwick.instame.activity.AboutActivity;
 import com.wartechwick.instame.activity.PhotoActivity;
 import com.wartechwick.instame.activity.PlayActivity;
 import com.wartechwick.instame.sync.HttpClient;
@@ -134,6 +135,10 @@ public class IntentUtils {
         intent.putExtra(Intent.EXTRA_TEXT, "");
 
         activity.startActivity(Intent.createChooser(intent, "Send Email"));
+    }
+
+    public static void gotoAbout(Activity activity) {
+        activity.startActivity(new Intent(activity, AboutActivity.class));
     }
 
     public static void rateInstaMe(Activity activity) {

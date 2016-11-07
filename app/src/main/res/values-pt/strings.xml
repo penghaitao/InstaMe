@@ -37,4 +37,9 @@
     <string name="action_delete_all">Delete all</string>
     <string name="delete_all_message">Are you sure?</string>
     <string name="yes">YES</string>
+    <string name="action_about">About</string>
+    <string name="licence">Licence</string>
+    <string name="share">Share this app</string>
+    <string name="rate">Rate</string>
+    <string name="version">Version</string>
 </resources>

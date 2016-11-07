@@ -30,4 +30,9 @@
     <string name="action_delete_all">删除所有图片</string>
     <string name="delete_all_message">你确定吗？</string>
     <string name="yes">好的</string>
+    <string name="action_about">关于</string>
+    <string name="licence">开源库</string>
+    <string name="rate">评分</string>
+    <string name="share">分享此应用</string>
+    <string name="version">版本</string>
 </resources>
