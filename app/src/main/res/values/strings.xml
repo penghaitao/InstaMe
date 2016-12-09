@@ -10,8 +10,12 @@
     <string name="insta_help">3 Steps to get your favorite photo/video from Instagram(1st and 2nd steps can be swapped)\n\n
         1. Open InstantSave\n\n 2. Open your Instagram, choose Copy Share URL on photo/video you like\n\n 3. Back to InstantSave,
         you will see the photo/video in the list. You can save, share or set wallpaper as you wish.</string>
+    <string name="insta_help1">Open Instagram</string>
+    <string name="insta_help2">Choose Copy Share URL</string>
+    <string name="insta_help3">Back to InstantSave, you will see the photo/video in the list. You can save, share or set wallpaper as you wish</string>
     <string name="need_permission">You need to allow access to your storage, So we can save the picture</string>
     <string name="permission_granted">Now You can save, share or set wallpaper as you wish. Enjoy!</string>
+    <string name="image_url_saved">Image url has been saved, go to instantsave to see this photo :)</string>
     <string name="image_saved">Image has been saved! :)</string>
     <string name="video_saved">Video has been saved! :)</string>
     <string name="image_saved_already">Image has been saved already, you can see it in your album</string>
@@ -48,7 +52,9 @@
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-5499259334073863/2322679434</string>
     <string name="thanks">thanks</string>
     <string name="save_failed">Image save failed</string>
+    <string name="save_url_failed">Image url save failed</string>
     <string name="action_high_resolution">High quality image</string>
     <string name="save_high_resolution_on">Save high quality images</string>
     <string name="save_high_resolution_off">Save normal quality images</string>
+    <string name="guideline">Guidelines - How to use?</string>
 </resources>

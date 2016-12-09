@@ -11,6 +11,9 @@
     <string name="image_saved">图片下载成功</string>
     <string name="image_saved_already">图片下载成功，你可以去相册中查看</string>
     <string name="insta_help">只需要3步即可从Instagram中下载到你喜欢的图片或者视频（第一步和第二步可以互换））\n\n 1.打开InstantSave \n\n 2.打开Instagram 点击你喜欢的照片或者视频的右上角的三个点，选择“复制网址”\n\n 3.回到InstantSave 你将看到你喜欢的图片和视频已经在列表中了，你可以保存，分享或者设置成壁纸。</string>
+    <string name="insta_help1">打开Instagram</string>
+    <string name="insta_help2">选择“复制网址”</string>
+    <string name="insta_help3">回到InstantSave 你将看到你喜欢的图片和视频已经在列表中了，你可以保存，分享或者设置成壁纸</string>
     <string name="need_permission">我们需要获得访问设备上存储空间的权限，才能够保存图片</string>
     <string name="ok">好的</string>
     <string name="permission_granted">现在已经可以随心所欲的保存、分享和设置壁纸了，祝你使用愉快</string>
@@ -35,4 +38,7 @@
     <string name="rate">评分</string>
     <string name="share">分享此应用</string>
     <string name="version">版本</string>
+    <string name="guideline">帮助</string>
+    <string name="image_url_saved">图片链接保存成功，请到InstantSave中查看图片</string>
+    <string name="save_url_failed">图片地址保存失败</string>
 </resources>

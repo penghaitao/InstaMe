@@ -8,29 +8,9 @@
     android:layout_height="match_parent"
     tools:context="com.wartechwick.instame.activity.AboutActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:elevation="2dp"
-        android:padding="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:theme="@style/ThemeOverlay.AppCompat">
-
-        <TextView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_about"
-            android:textSize="24sp"/>
-
-    </android.support.v7.widget.Toolbar>
-
     <fragment android:id="@+id/fragment"
               android:name="com.wartechwick.instame.activity.AboutActivity$AboutActivityFragment"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_below="@id/toolbar"/>
+              android:layout_height="match_parent"/>
 
 </RelativeLayout>

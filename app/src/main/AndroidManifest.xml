@@ -38,11 +38,11 @@
         </activity>
         <activity android:name=".activity.AboutActivity"
                   android:screenOrientation="portrait"
-                  android:theme="@style/AppTheme.NoActionBar">
+                  android:theme="@style/AppTheme">
         </activity>
         <activity android:name=".activity.LicenceActivity"
                   android:screenOrientation="portrait"
-                  android:theme="@style/AppTheme.NoActionBar">
+                  android:theme="@style/AppTheme">
         </activity>
     </application>
 

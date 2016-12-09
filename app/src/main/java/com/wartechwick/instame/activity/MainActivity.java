@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     String clipContent = null;
     String lastUrl = null;
-    boolean isFirstOpen = false;
     Realm realm;
     App app;
     private int progressbarNum = 0;
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(mToolBar);
         getActionBarTextView();
 //        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        introLogic();
         app = (App) getApplicationContext();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
@@ -110,11 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gotoinstagramButton.setOnClickListener(this);
         setupAdapter();
         lastUrl = PreferenceManager.getDefaultSharedPreferences(this).getString(getResources().getString(R.string.last_url), "");
-        isFirstOpen = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getResources().getString(R.string.first_open), true);
-        if (isFirstOpen) {
-            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(getResources().getString(R.string.first_open), false).commit();
-            Utils.showHelpMessage(this, getResources().getString(R.string.welcome));
-        }
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         mPrimaryClipChangedListener = new ClipboardManager.OnPrimaryClipChangedListener() {
             @Override
@@ -132,6 +126,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdView.loadAd(adRequest);
         //test
 //        new LoadUrlTask().execute("https://www.instagram.com/p/BIQuaKpDWRY/");
+    }
+
+    private void introLogic() {
+        boolean isFirstOpen = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean(getResources().getString(R.string.first_open), true);
+        if (isFirstOpen) {
+            Utils.showHelpMessage(MainActivity.this, getResources().getString(R.string.welcome));
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putBoolean(getResources().getString(R.string.first_open), false).apply();
+        }
     }
 
     @Override
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onTouch(View v, ImageView itemView, int position) {
                 switch (v.getId()) {
                     case R.id.author_name:
+                        app.logFirebaseEvent("NAME", "NAME");
                         IntentUtils.gotoAuthorUrl(photoList.get(position).getAuthorUrl(), MainActivity.this);
                         break;
                     case R.id.btn_save:
@@ -243,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailUrl(), fileName);
                             }
                         } else {
+                            app.logFirebaseEvent("VIDEO", "VIDEO");
                             play(position);
                         }
                         break;
@@ -451,11 +455,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressBar.setVisibility(View.INVISIBLE);
             }
             if (result != null) {
-                TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                TastyToast.makeText(app, getResources().getString(R.string.save_url_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
             else {
                 if (!app.uiInForeground) {
-                    Toast.makeText(app,getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(app,getResources().getString(R.string.image_url_saved), Toast.LENGTH_SHORT).show();
                 }
                 if (gramAdapter != null) {
                     gramAdapter.notifyDataSetChanged();
@@ -504,6 +508,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
+                app.logFirebaseEvent("HELP", "HELP");
                 String version = BuildConfig.VERSION_NAME;
                 Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;

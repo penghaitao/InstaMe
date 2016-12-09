@@ -5,36 +5,19 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.wartechwick.instame.BuildConfig;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.utils.IntentUtils;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 public class AboutActivity extends AppCompatActivity {
-
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.logo)
-    TextView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(" ");
-//        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
-//        logo.setTypeface(typeface);
+        setTitle(R.string.action_about);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -75,6 +58,15 @@ public class AboutActivity extends AppCompatActivity {
                     return true;
                 }
             });
+//            Preference guide = findPreference("Guidelines");
+//            guide.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//                @Override
+//                public boolean onPreferenceClick(Preference preference) {
+//                    String version = BuildConfig.VERSION_NAME;
+//                    Utils.showHelpMessage(getActivity(), getResources().getString(R.string.app_name) + " v" + version);
+//                    return true;
+//                }
+//            });
 
             Preference share = findPreference("share");
             share.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

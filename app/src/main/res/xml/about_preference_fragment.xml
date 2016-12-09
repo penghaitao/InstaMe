@@ -12,11 +12,15 @@
             android:key="Licence"
             android:selectable="true"
             android:title="@string/licence"/>
+        <!--<Preference-->
+            <!--android:enabled="true"-->
+            <!--android:key="Guidelines"-->
+            <!--android:selectable="true"-->
+            <!--android:title="@string/guideline"/>-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/action_rate">
         <Preference
             android:key="rate"
-            android:summary="@string/support_message"
             android:title="@string/rate"/>
         <Preference
             android:key="feedback"

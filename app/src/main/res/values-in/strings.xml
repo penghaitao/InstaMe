@@ -5,10 +5,13 @@
     <string name="action_rate">Mendukung Kami</string>
     <string name="action_settings">Pengaturan</string>
     <string name="cancel">Batalkan</string>
-    <string name="go_to_instagram">PILIH MENU INSTAGRAM</string>
+    <string name="go_to_instagram">PERGI KE INSTAGRAM</string>
     <string name="image_saved">Fototelahtersimpan</string>
     <string name="image_saved_already">Fototelahtersimpan, silahkanlihatdalamalbumu</string>
     <string name="insta_help">Tigalangkahuntukmendapatkanfoto/video melalui Instagram\n\n 1. BukaInstantSave \n\n 2. Bukaakuninstragam, pilih menu Copy Share padatautanfoto/video yang kamusukai \n\n 3. KembalikeInstantSavedanakanterlihatdaftarfoto/video.Kamudapatmenyimpan, berbagiataumenggunakannyasebagai wallpaper</string>
+    <string name="insta_help1">Bukaakun instragam</string>
+    <string name="insta_help2">Pilih menu Copy Share padatautanfoto/video yang kamusukai</string>
+    <string name="insta_help3">Kembali ke InstantSave, Anda akan melihat foto / video dalam daftar</string>
     <string name="need_permission">Pastikankamumemilikikapasitas yang cukupuntukpenyimpanankoleksifotomu</string>
     <string name="ok">OK</string>
     <string name="got_it">OK</string>
@@ -34,5 +37,8 @@
     <string name="share">"Bagikan Aplikasi ini "</string>
     <string name="rate">Nilai aplikasi ini</string>
     <string name="version">Versi</string>
+    <string name="guideline">Panduan - Cara pemakaian?</string>
+    <string name="image_url_saved">Fotourltelahtersimpan</string>
+    <string name="save_url_failed">Fotourlmendownloadgagal</string>
 
 </resources>
