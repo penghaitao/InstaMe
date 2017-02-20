@@ -15,7 +15,7 @@
     <string name="insta_help3">Back to InstantSave, you will see the photo/video in the list. You can save, share or set wallpaper as you wish</string>
     <string name="need_permission">You need to allow access to your storage, So we can save the picture</string>
     <string name="permission_granted">Now You can save, share or set wallpaper as you wish. Enjoy!</string>
-    <string name="image_url_saved">Image url has been saved, go to instantsave to see this photo :)</string>
+    <string name="image_url_saved">Image url has been saved, go to InstantSave to see this photo</string>
     <string name="image_saved">Image has been saved! :)</string>
     <string name="video_saved">Video has been saved! :)</string>
     <string name="image_saved_already">Image has been saved already, you can see it in your album</string>

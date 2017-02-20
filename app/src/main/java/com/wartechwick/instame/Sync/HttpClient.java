@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.Log;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -15,9 +14,9 @@ import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.wartechwick.instame.db.Photo;
 import com.wartechwick.instame.utils.Constant;
 import com.wartechwick.instame.utils.Utils;
-import com.wartechwick.instame.db.Photo;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -128,16 +127,14 @@ public class HttpClient {
                 .create();
         try {
             photo = gson.fromJson(json, Photo.class);
-            if (photo.getHtml() != null && photo.getHtml().contains("video posted")) {
-                String html = HttpClient.callAPI(clipContent);
-                Document doc1 = Jsoup.parse(html);
-                Element videoMeta = doc1.select("meta[property=og:video]").first();
-                String video = null;
-                if (videoMeta != null) {
-                    video = videoMeta.attr("content");
-                }
-                photo.setVideoUrl(video);
+            String html = HttpClient.callAPI(clipContent);
+            Document doc1 = Jsoup.parse(html);
+            Element videoMeta = doc1.select("meta[property=og:video]").first();
+            String video = null;
+            if (videoMeta != null) {
+                video = videoMeta.attr("content");
             }
+            photo.setVideoUrl(video);
             photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
             photo.setUrl(clipContent);
             photo.setTime(System.currentTimeMillis());

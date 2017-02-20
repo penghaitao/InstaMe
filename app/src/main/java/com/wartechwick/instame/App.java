@@ -23,7 +23,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = this;
-        RateThisApp.Config config = new RateThisApp.Config(7, 20);
+        RateThisApp.Config config = new RateThisApp.Config(70, 20);
         RateThisApp.init(config);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         if (BuildConfig.DEBUG) {

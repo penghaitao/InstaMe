@@ -6,14 +6,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.wartechwick.instame.App;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.utils.Utils;
 
+import es.dmoral.toasty.Toasty;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -56,7 +57,8 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
             app.logFirebaseEvent(fileName, "SAVE");
             Uri uri = Utils.saveImage(photoView, fileName, this);
             if (uri != null) {
-                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                Toasty.success(app, getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT, true).show();
+//                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
             }
         }
     }
@@ -66,10 +68,12 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
         switch (requestCode) {
             case Utils.REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                    Toasty.success(app, getResources().getString(R.string.permission_granted), Toast.LENGTH_LONG, true).show();
+//                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                     Utils.init(this);
                 } else {
-                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);
+                    Toasty.info(app, getResources().getString(R.string.need_permission), Toast.LENGTH_LONG, true).show();
+//                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);
                 }
                 break;
             default:

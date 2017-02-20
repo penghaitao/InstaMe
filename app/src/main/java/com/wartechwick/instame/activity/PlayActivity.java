@@ -5,9 +5,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.sdsmdg.tastytoast.TastyToast;
 import com.wartechwick.instame.R;
 import com.wartechwick.instame.utils.Utils;
 
@@ -15,6 +15,7 @@ import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 
 public class PlayActivity extends AppCompatActivity {
@@ -41,7 +42,8 @@ public class PlayActivity extends AppCompatActivity {
         gramVideoView.seekTo(100);
         gramVideoView.requestFocus();
         gramVideoView.start();
-        TastyToast.makeText(getApplicationContext(), "Loading...", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
+        Toasty.normal(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
+//        TastyToast.makeText(getApplicationContext(), "Loading...", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
 
         gramVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

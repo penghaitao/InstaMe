@@ -30,7 +30,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.kobakei.ratethisapp.RateThisApp;
-import com.sdsmdg.tastytoast.TastyToast;
 import com.wartechwick.instame.App;
 import com.wartechwick.instame.BuildConfig;
 import com.wartechwick.instame.PhotoAdapter;
@@ -50,6 +49,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -281,16 +281,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!file.exists()) {
                     Uri uri = Utils.saveImage(itemView, filename, this);
                     if (uri != null) {
-                        TastyToast.makeText(app, getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        Toasty.success(app, getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT, true).show();
+//                        TastyToast.makeText(app, getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                     }
                 } else {
-                    TastyToast.makeText(app, getResources().getString(R.string.image_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    Toasty.success(app, getResources().getString(R.string.image_saved_already), Toast.LENGTH_SHORT, true).show();
+//                    TastyToast.makeText(app, getResources().getString(R.string.image_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 }
             } else {
                 if (!file.exists()) {
                     new SaveVideoTask(false).execute(videoUrl, filename);
                 } else {
-                    TastyToast.makeText(app, getResources().getString(R.string.video_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    Toasty.success(app, getResources().getString(R.string.video_saved_already), Toast.LENGTH_SHORT, true).show();
+//                    TastyToast.makeText(app, getResources().getString(R.string.video_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 }
             }
         }
@@ -397,9 +400,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(Boolean s) {
             progressBar.dismiss();
             if (s) {
-                TastyToast.makeText(app, getResources().getString(R.string.video_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                Toasty.success(app, getResources().getString(R.string.video_saved), Toast.LENGTH_SHORT, true).show();
+//                TastyToast.makeText(app, getResources().getString(R.string.video_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
             } else {
-                TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                Toasty.error(app, getResources().getString(R.string.save_failed), Toast.LENGTH_SHORT, true).show();
+//                TastyToast.makeText(app, getResources().getString(R.string.save_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
         }
 
@@ -455,11 +460,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 progressBar.setVisibility(View.INVISIBLE);
             }
             if (result != null) {
-                TastyToast.makeText(app, getResources().getString(R.string.save_url_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                Toasty.error(app, getResources().getString(R.string.save_url_failed), Toast.LENGTH_SHORT, true).show();
+//                TastyToast.makeText(app, getResources().getString(R.string.save_url_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
             else {
                 if (!app.uiInForeground) {
-                    Toast.makeText(app,getResources().getString(R.string.image_url_saved), Toast.LENGTH_SHORT).show();
+                    Toasty.success(app,getResources().getString(R.string.image_url_saved), Toast.LENGTH_SHORT, true).show();
                 }
                 if (gramAdapter != null) {
                     gramAdapter.notifyDataSetChanged();
@@ -527,9 +533,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 item.setChecked(isChecked);
                 PreferencesLoader loader = new PreferencesLoader(this);
                 loader.saveBoolean(R.string.action_high_resolution, isChecked);
-                TastyToast.makeText(app, getResources().getString(isChecked
+                Toasty.success(app, getResources().getString(isChecked
                         ? R.string.save_high_resolution_on
-                        : R.string.save_high_resolution_off), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        : R.string.save_high_resolution_off), Toast.LENGTH_SHORT, true).show();
+//                TastyToast.makeText(app, getResources().getString(isChecked
+//                        ? R.string.save_high_resolution_on
+//                        : R.string.save_high_resolution_off), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 break;
             case R.id.action_delete:
                 if (photoList.size()>0) {
@@ -570,10 +579,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case Utils.REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    TastyToast.makeText(app, getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                    Toasty.success(app, getResources().getString(R.string.permission_granted), Toast.LENGTH_LONG, true).show();
+//                    TastyToast.makeText(app, getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                     Utils.init(this);
                 } else {
-                    TastyToast.makeText(app, getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);
+                    Toasty.info(app, getResources().getString(R.string.need_permission), Toast.LENGTH_LONG, true).show();
+//                    TastyToast.makeText(app, getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);
                 }
                 break;
             default:
