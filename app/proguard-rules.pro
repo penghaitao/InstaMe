@@ -30,4 +30,6 @@
 }
 -keeppackagenames org.jsoup.nodes
 
+-printmapping build/outputs/mapping/release/mapping.txt
+
 #-keep public class * implements com.bumptech.glide.module.GlideModule

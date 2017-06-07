@@ -28,6 +28,9 @@
         <Preference
             android:key="share"
             android:title="@string/share"/>
+        <!--<Preference-->
+            <!--android:key="upgrade"-->
+            <!--android:title="@string/upgrade" />-->
 
     </PreferenceCategory>
 </PreferenceScreen>

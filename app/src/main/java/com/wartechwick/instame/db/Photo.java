@@ -38,6 +38,8 @@ public class Photo extends RealmObject{
     private String url;
     private String videoUrl;
     private long time;
+    @Required
+    private String avatar;
 
     public String getAuthorName() {
         return authorName;
@@ -141,5 +143,13 @@ public class Photo extends RealmObject{
 
     public void setThumbnailLargeUrl(String thumbnailLargeUrl) {
         this.thumbnailLargeUrl = thumbnailLargeUrl;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

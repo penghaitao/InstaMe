@@ -8,11 +8,6 @@ import android.widget.ImageView;
  */
 public interface OnPhotoClickListener {
 
-    public void onTouch(View v, ImageView imageView, int position);
+    void onTouch(View v, ImageView imageView, int position);
 
-//    public void onAuthorName();
-//    public void onDownload();
-//    public void onShare();
-//    public void onWallPaper();
-//    public void onDelete();
 }

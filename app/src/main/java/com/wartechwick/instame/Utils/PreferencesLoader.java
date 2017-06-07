@@ -7,8 +7,8 @@ import android.preference.PreferenceManager;
 
 public class PreferencesLoader {
 
-    private SharedPreferences mSharedPreferences;
-    private Context mContext;
+    private final SharedPreferences mSharedPreferences;
+    private final Context mContext;
 
 
     public PreferencesLoader(Context context) {

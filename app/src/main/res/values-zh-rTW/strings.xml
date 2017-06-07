@@ -18,7 +18,7 @@
 <string name="support_message">如果你喜歡使用本應用，請給我們五星好評好嗎？</string>
 <string name="video_saved">視頻下載成功</string>
 <string name="video_saved_already">視頻已經保存成功，請在相冊中查看</string>
-<string name="video_start_saving">下載中...請稍後</string>
+<string name="video_start_saving">下載中&#8230;請稍後</string>
 <string name="watch_demo">查看演示視頻</string>
 <string name="welcome">歡迎</string>
 <string name="not_now">不了</string>

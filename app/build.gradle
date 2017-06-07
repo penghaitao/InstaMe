@@ -3,14 +3,14 @@ apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "com.wartechwick.instame"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 20170218
-        versionName "1.6.5"
+        versionCode 20170526
+        versionName "1.9.3"
     }
     buildTypes {
         release {
@@ -40,6 +40,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.chrisbanes:PhotoView:1.2.7'
     compile 'com.github.GrenderG:Toasty:1.1.3'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

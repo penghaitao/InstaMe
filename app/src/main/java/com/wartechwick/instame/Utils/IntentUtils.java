@@ -21,7 +21,7 @@ import java.io.File;
 public class IntentUtils {
 
     public static void shareImage(ImageView itemView, String filename, Context context) {
-        Uri uri = null;
+        Uri uri;
         File file = new File(Utils.getImageDirectory(context)+filename);
         if (file.exists()) {
             uri = Uri.fromFile(file);
@@ -36,7 +36,7 @@ public class IntentUtils {
 
     public static void setWallPaper(ImageView itemView, String filename, Context context) {
         File file = new File(Utils.getImageDirectory(context)+filename);
-        Uri uri = null;
+        Uri uri;
         if (file.exists()) {
             uri = Uri.fromFile(file);
         } else {

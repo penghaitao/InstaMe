@@ -14,8 +14,8 @@ import com.wartechwick.instame.db.DatabaseHandler;
 public class App extends Application {
 
     public static boolean uiInForeground = false;
-    public static Context sContext;
-    public FirebaseAnalytics mFirebaseAnalytics;
+    private Context sContext;
+    private FirebaseAnalytics mFirebaseAnalytics;
 //    private ClipboardManager clipboard;
 
 
@@ -52,11 +52,6 @@ public class App extends Application {
         return new DatabaseHandler(getApplicationContext());
     }
 
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-    }
 
     public void logFirebaseEvent(String name, String type) {
         Bundle params = new Bundle();

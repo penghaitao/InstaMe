@@ -21,15 +21,18 @@ import com.wartechwick.instame.utils.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.realm.RealmObject;
 
@@ -42,7 +45,7 @@ public class HttpClient {
     private final static int TIMEOUT_SOCKET = 30000;//30sec
     private final static String TAG = "HttpClient";
 
-    public static synchronized boolean isNetworkConnected(Context context) {
+    private static synchronized boolean isNetworkConnected(Context context) {
         ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connManager != null) {
             NetworkInfo ni = connManager.getActiveNetworkInfo();
@@ -53,7 +56,7 @@ public class HttpClient {
         return false;
     }
 
-    public static String callAPI(String url) {
+    private static String callAPI(String url) {
         String result = null;
         OkHttpClient client = new OkHttpClient();
 
@@ -61,9 +64,8 @@ public class HttpClient {
                 .url(url)
                 .build();
 
-        Response response = null;
         try {
-            response = client.newCall(request).execute();
+            Response response = client.newCall(request).execute();
             result = response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +110,7 @@ public class HttpClient {
         return photo;
     }
 
-    public static Photo getPhoto2(Context context, String clipContent) {
+    public static Photo getPhoto2(String clipContent) {
         Photo photo = null;
 //        Log.i("pp", clipContent);
         String json = callAPI(Constant.API_BASE_URL+clipContent);
@@ -144,12 +146,115 @@ public class HttpClient {
         return photo;
     }
 
+    public static ArrayList<Photo> getPhotos(String clipContent) {
+        ArrayList<Photo> photos = new ArrayList<>();
+        String json = callAPI(Constant.API_BASE_URL+clipContent);
+        Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new ExclusionStrategy() {
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getDeclaringClass().equals(RealmObject.class);
+                    }
+
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .create();
+        try {
+            Photo photo = gson.fromJson(json, Photo.class);
+            photo.setThumbnailLargeUrl(clipContent + "media/?size=l");
+            photo.setUrl(clipContent);
+            photo.setTime(System.currentTimeMillis());
+            String html = HttpClient.callAPI(clipContent);
+            Document doc1 = Jsoup.parse(html);
+            Element videoMeta = doc1.select("meta[property=og:video]").first();
+            String video = null;
+            if (videoMeta != null) {
+                video = videoMeta.attr("content");
+            }
+            photo.setVideoUrl(video);
+            if (photo.getThumbnailUrl() == null || photo.getThumbnailUrl().contains("null") || html.contains("display_url")) {
+                Elements script = doc1.getElementsByTag("script");
+                for (Element element : script) {
+                    if (element.toString().contains("display_url")) {
+                        String re1=".*?";  // Non-greedy match on filler
+                        String re2="((?:http|https)(?::\\/{2}[\\w]+)(?:[\\/|\\.]?)(?:[^\\s\"]*))"; // HTTP URL 1
+
+                        Pattern p = Pattern.compile(re1+re2,Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+                        Matcher m = p.matcher(element.toString());
+                        long time = System.currentTimeMillis();
+                        String ownerAvatar = "";
+                        while (m.find())
+                        {
+                            String httpurl1=m.group(0);
+                            if (httpurl1.contains("owner") && httpurl1.contains("profile_pic_url")) {
+                                String[] picUrls = httpurl1.split("\"");
+                                ownerAvatar = picUrls[picUrls.length -1];
+                            }
+                            else if (httpurl1.contains("display_url")) {
+                                String[] displayurls = httpurl1.split("\"");
+                                String displayUrl = displayurls[displayurls.length - 1];
+                                Photo photo1 = gson.fromJson(json, Photo.class);
+                                photo1.setThumbnailUrl(displayUrl);
+                                photo1.setThumbnailLargeUrl(displayUrl);
+                                photo1.setUrl(clipContent);
+                                photo1.setTime(time--);
+                                photo1.setAvatar(ownerAvatar);
+                                if (photos.size() == 1) {
+                                    if (!displayUrl.equals(photos.get(0).getThumbnailUrl())) {
+                                        photos.add(photo1);
+                                    } else {
+                                        photos.get(0).setAvatar(ownerAvatar);
+                                    }
+                                } else {
+                                    photos.add(photo1);
+                                }
+                            } else if (httpurl1.contains("video_url")) {
+                                String[] videoUrls = httpurl1.split("\"");
+                                String videoUrl = videoUrls[videoUrls.length-1];
+                                if (photos.size() > 0) {
+                                    photos.get(photos.size()-1).setVideoUrl(videoUrl);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (photos.size() == 1 && (photos.get(0).getAvatar() == null || photos.get(0).getAvatar().equals(""))){
+                String ownerAvatar = "";
+                Elements script = doc1.getElementsByTag("script");
+                for (Element element : script) {
+                    if (element.toString().contains("profile_pic_url")) {
+                        String re1 = ".*?";  // Non-greedy match on filler
+                        String re2 = "((?:http|https)(?::\\/{2}[\\w]+)(?:[\\/|\\.]?)(?:[^\\s\"]*))"; // HTTP URL 1
+
+                        Pattern p = Pattern.compile(re1 + re2, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+                        Matcher m = p.matcher(element.toString());
+                        while (m.find()) {
+                            String httpurl1 = m.group(0);
+                            if (httpurl1.contains("owner") && httpurl1.contains("profile_pic_url")) {
+                                String[] picUrls = httpurl1.split("\"");
+                                ownerAvatar = picUrls[picUrls.length - 1];
+                            }
+                        }
+                    }
+                }
+                photos.get(0).setAvatar(ownerAvatar);
+            }
+        } catch (NullPointerException | IllegalStateException | JsonSyntaxException | IllegalArgumentException exception) {
+            exception.printStackTrace();
+        }
+//        Log.i("pp", photos.get(0).getAvatar()+"--------------------------------------------------------------------");
+        return photos;
+    }
+
     public static Uri loadVideo(String videoUrl, String filename, Activity context) {
-        URL url = null;
         String path = Utils.getImageDirectory(context);
         File file = new File(path, filename);
         try {
-            url = new URL(videoUrl);
+            URL url = new URL(videoUrl);
             URLConnection ucon = url.openConnection();
 
             ucon.setReadTimeout(TIMEOUT_CONNECTION);
@@ -170,10 +275,7 @@ public class HttpClient {
             outStream.flush();
             outStream.close();
             inStream.close();
-            Uri contentUri = Uri.fromFile(file);
-            return contentUri;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+            return Uri.fromFile(file);
         } catch (IOException e) {
             e.printStackTrace();
         }

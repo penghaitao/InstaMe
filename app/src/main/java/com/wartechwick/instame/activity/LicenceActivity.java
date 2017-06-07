@@ -22,8 +22,9 @@ public class LicenceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setTitle(R.string.licence);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         webView.loadUrl("file:///android_asset/license.html");
     }
 

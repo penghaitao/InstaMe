@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -94,14 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getActionBarTextView();
 //        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         introLogic();
-        app = (App) getApplicationContext();
+        app = (App) getApplication();
 //        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 //        getSupportActionBar().setCustomView(R.layout.abs_layout);
 //        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
 //        TextView textView = (TextView) findViewById(R.id.title);
 //        textView.setTypeface(myTypeface);
 //        textView.setGravity(Gravity.CENTER);
-        photoList = new ArrayList<Photo>();
+        photoList = new ArrayList<>();
 //        RecyclerView.ItemDecoration itemDecoration = new
 //                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
 //        recyclerView.addItemDecoration(itemDecoration);
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");//old
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-5499259334073863~8369213036");
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("0545F7BD1E5045CC9588FD23256A2622").build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("6B159B11D34BA65D5D179B0F836FD60E").build();
         mAdView.loadAd(adRequest);
         //test
 //        new LoadUrlTask().execute("https://www.instagram.com/p/BIQuaKpDWRY/");
@@ -139,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        app.uiInForeground = true;
+        App.uiInForeground = true;
         // Monitor launch times and interval from installation
         RateThisApp.onStart(this);
         // If the criteria is satisfied, "Rate this app" dialog will be shown
@@ -149,24 +150,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        app.uiInForeground = false;
+        App.uiInForeground = false;
     }
 
-    private TextView getActionBarTextView() {
-        TextView titleTextView = null;
-
+    private void getActionBarTextView() {
         try {
             Field f = mToolBar.getClass().getDeclaredField("mTitleTextView");
             Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
             f.setAccessible(true);
-            titleTextView = (TextView) f.get(mToolBar);
+            TextView titleTextView = (TextView) f.get(mToolBar);
             titleTextView.setTextSize(36);
             titleTextView.setPadding(0, 10, 0, 0);
             titleTextView.setTypeface(myTypeface);
         } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        return titleTextView;
     }
 
 
@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ClipData clipData = clipboard.getPrimaryClip();
         if (clipData != null && clipData.getItemAt(0) != null && clipData.getItemAt(0).getText() != null && !clipData.getItemAt(0).getText().equals(lastUrl)) {
             clipContent = clipData.getItemAt(0).getText().toString();
-//            Log.i("pp", "lalalalalala---------------"+clipContent+"---last"+lastUrl);
             if (clipContent.contains(Constant.INSTAGRAM_BASE_URL)) {
                 boolean isExist = false;
                 for (Photo photo : photoList) {
@@ -201,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .findAll();
         if (result2 != null && result2.size() > 0) {
             result2 = result2.sort("time", Sort.DESCENDING);
-            photoList = new ArrayList<Photo>(result2.subList(0, result2.size()));
+            photoList = new ArrayList<>(result2.subList(0, result2.size()));
             gramAdapter = new PhotoAdapter(MainActivity.this, photoList);
             gramAdapter.setiPhotoClickListener(getGramClickListener());
             recyclerView.setAdapter(gramAdapter);
@@ -212,10 +211,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private OnPhotoClickListener getGramClickListener() {
-        OnPhotoClickListener listener = new OnPhotoClickListener() {
+        return new OnPhotoClickListener() {
             @Override
             public void onTouch(View v, ImageView itemView, int position) {
                 switch (v.getId()) {
+                    case R.id.author_avatar:
                     case R.id.author_name:
                         app.logFirebaseEvent("NAME", "NAME");
                         IntentUtils.gotoAuthorUrl(photoList.get(position).getAuthorUrl(), MainActivity.this);
@@ -253,21 +253,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
-
-        return listener;
     }
 
     private String getFileName(int position) {
-        String filename = null;
+        String filename;
         Photo photo = photoList.get(position);
-        String[] urlBits = photo.getUrl().split("/");
+        String[] urlBits;
         String videoUrl = photo.getVideoUrl();
         if (videoUrl == null) {
-            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1] + ".jpg";
+            urlBits = photo.getThumbnailUrl().split("/");
+            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1];
         } else {
-            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1] + ".mp4";
+            urlBits = photo.getVideoUrl().split("/");
+            filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1];
         }
         return filename;
+    }
+
+    private void play(int position) {
+        Photo photo = photoList.get(position);
+        String[] urlBits = photo.getUrl().split("/");
+        String filename = photo.getAuthorName() + "_" + urlBits[urlBits.length - 1];
+        IntentUtils.playVideo(MainActivity.this, photo.getVideoUrl(), filename);
     }
 
     private void save(int position, ImageView itemView) {
@@ -289,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    TastyToast.makeText(app, getResources().getString(R.string.image_saved_already), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 }
             } else {
-                if (!file.exists()) {
+                if (!file.exists() || file.length() == 0) {
                     new SaveVideoTask(false).execute(videoUrl, filename);
                 } else {
                     Toasty.success(app, getResources().getString(R.string.video_saved_already), Toast.LENGTH_SHORT, true).show();
@@ -354,13 +361,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (photoList.size() == 0) {
             setEmptyView();
         }
-    }
-
-    private void play(int position) {
-        Photo photo = photoList.get(position);
-        String[] urlBits = photo.getUrl().split("/");
-        String filename = urlBits[urlBits.length - 1] + ".mp4";
-        IntentUtils.playVideo(MainActivity.this, photo.getVideoUrl(), filename);
     }
 
     @Override
@@ -434,11 +434,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected String doInBackground(String... params) {
-            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).commit();
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().putString(getResources().getString(R.string.last_url), params[0]).apply();
             String reminder = null;
-            final Photo gram = HttpClient.getPhoto2(MainActivity.this, params[0]);
-            if (gram != null) {
-                photoList.add(0, gram);
+            final ArrayList<Photo> gram = HttpClient.getPhotos(params[0]);
+            if (gram.size() > 0) {
+                photoList.addAll(0, gram);
                 final Realm mRealm = app.getDBHandler().getRealmInstance();
                 mRealm.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                TastyToast.makeText(app, getResources().getString(R.string.save_url_failed), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
             else {
-                if (!app.uiInForeground) {
+                if (!App.uiInForeground) {
                     Toasty.success(app,getResources().getString(R.string.image_url_saved), Toast.LENGTH_SHORT, true).show();
                 }
                 if (gramAdapter != null) {
@@ -518,16 +518,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String version = BuildConfig.VERSION_NAME;
                 Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;
-//            case R.id.action_feedback:
-//                IntentUtils.sendFeedback(this);
-//                break;
             case R.id.action_about:
                 IntentUtils.gotoAbout(this);
                 break;
-//            case R.id.action_rate:
-//                Utils.showSupportMessage(this);
-//                app.logFirebaseEvent("SUPPORT", "SUPPORT");
-//                break;
             case R.id.action_high_resolution:
                 boolean isChecked = !item.isChecked();
                 item.setChecked(isChecked);
@@ -562,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void deleteAll() {
         app.logFirebaseEvent("DELETE_ALL", "DELETE_ALL");
-        photoList.removeAll(photoList);
+        photoList.clear();
         realm = app.getDBHandler().getRealmInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -575,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case Utils.REQUEST_CODE_ASK_PERMISSIONS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

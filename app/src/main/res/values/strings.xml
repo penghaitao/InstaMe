@@ -20,14 +20,15 @@
     <string name="video_saved">Video has been saved! :)</string>
     <string name="image_saved_already">Image has been saved already, you can see it in your album</string>
     <string name="video_saved_already">Video has been saved already, you can see it in your album</string>
-    <string name="video_start_saving">Downloading...Please wait</string>
+    <string name="video_start_saving">Downloading&#8230;Please wait</string>
     <string name="ok">OK</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
     <string name="got_it">GOT IT!</string>
     <string name="watch_demo">WATCH DEMO VIDEO</string>
     <string name="go_to_instagram">GO TO INSTAGRAM</string>
     <string name="last_url" translatable="false">LASTURL</string>
     <string name="first_open" translatable="false">FIRSTOPEN</string>
+    <string name="update" translatable="false">UPDATE</string>
 
     <!--delete all message-->
     <string name="delete_all_message">Are you sure?</string>
@@ -57,4 +58,5 @@
     <string name="save_high_resolution_on">Save high quality images</string>
     <string name="save_high_resolution_off">Save normal quality images</string>
     <string name="guideline">Guidelines - How to use?</string>
+    <string name="upgrade" translatable="false">Upgrade</string>
 </resources>

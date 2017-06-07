@@ -21,6 +21,11 @@
 package com.wartechwick.instame.db;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
+
+import com.wartechwick.instame.R;
+
+import java.io.FileNotFoundException;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -28,20 +33,35 @@ import io.realm.RealmConfiguration;
 public class DatabaseHandler {
 
     private static RealmConfiguration mRealmConfig;
-    private Context mContext;
-    private Realm realm;
+    private final Context mContext;
+    private final Realm realm;
 
     public DatabaseHandler(Context context) {
         this.mContext = context;
-
+        int databaseUpdateVersion = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getResources().getString(R.string.update), 0);
+        if (databaseUpdateVersion == 0) {
+            Realm.init(mContext);
+            mRealmConfig = new RealmConfiguration.Builder()
+                    .schemaVersion(1)
+                    .build();
+            try {
+                Realm.migrateRealm(mRealmConfig, new Migration());
+            } catch (FileNotFoundException ignored) {
+                // If the Realm file doesn't exist, just ignore.
+            }
+            PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(mContext.getResources().getString(R.string.update), 1).apply();
+        }
         this.realm = getNewRealmInstance();
     }
 
-    public Realm getNewRealmInstance(){
+    private Realm getNewRealmInstance(){
         if (mRealmConfig == null) {
-            mRealmConfig = new RealmConfiguration.Builder(mContext)
+            Realm.init(mContext);
+            mRealmConfig = new RealmConfiguration.Builder()
+                    .schemaVersion(1)
                     .build();
         }
+
         return Realm.getInstance(mRealmConfig); // Automatically run migration if needed
     }
 

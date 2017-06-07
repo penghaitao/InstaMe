@@ -18,18 +18,19 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by penghaitao on 2015/12/19.
  */
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
 
-    private List<Photo> mGrams;
-    private Context mContext;
+    private final List<Photo> mGrams;
+    private final Context mContext;
     private OnPhotoClickListener iPhotoClickListener;
 //    private boolean bVideoIsBeingTouched = false;
 //    private Handler mHandler = new Handler();
-    private PreferencesLoader preferencesLoader;
+    private final PreferencesLoader preferencesLoader;
 
     public PhotoAdapter(Context context, List<Photo> grams) {
         mGrams = grams;
@@ -44,8 +45,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
         View gramView = inflater.inflate(R.layout.insta_item, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(gramView);
-        return viewHolder;
+        return new ViewHolder(gramView);
     }
 
     public void setiPhotoClickListener(OnPhotoClickListener iPhotoClickListener) {
@@ -56,7 +56,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         Photo photo = mGrams.get(position);
-        holder.position = position;
         holder.authorNameView.setText(photo.getAuthorName());
 
         if (photo.getVideoUrl() != null) {
@@ -81,6 +80,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         } else {
             Picasso.with(mContext).load(photo.getThumbnailUrl()).into(holder.photoImageView);
         }
+        if (photo.getAvatar() != null && !photo.getAvatar().equals("")) {
+            Picasso.with(mContext).load(photo.getAvatar()).into(holder.avatarView);
+        } else {
+            Picasso.with(mContext).load(R.drawable.default_avatar).into(holder.avatarView);
+        }
 //        Glide.with(mContext).load(photo.getThumbnailLargeUrl()).into(holder.photoImageView);
     }
 
@@ -98,7 +102,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         @Bind(R.id.btn_wallpaper) ImageView wallPaperButton;
         @Bind(R.id.btn_delete) ImageView deleteButton;
         @Bind(R.id.insta_play) ImageView playView;
-        public int position;
+        @Bind(R.id.author_avatar)
+        CircleImageView avatarView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -110,11 +115,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
             deleteButton.setOnClickListener(this);
             playView.setOnClickListener(this);
             photoImageView.setOnClickListener(this);
+            avatarView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            iPhotoClickListener.onTouch(v, photoImageView, position);
+            iPhotoClickListener.onTouch(v, photoImageView, getAdapterPosition());
         }
 
 

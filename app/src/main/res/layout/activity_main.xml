@@ -87,6 +87,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/fab_margin_vertical"
         android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
         android:src="@drawable/ic_photo_camera_white_36dp"
         app:backgroundTint="#ed4956"
         app:layout_anchor="@id/insta_recyler_view"

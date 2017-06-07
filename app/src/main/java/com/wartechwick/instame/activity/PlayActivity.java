@@ -1,10 +1,10 @@
 package com.wartechwick.instame.activity;
 
-import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -22,7 +22,6 @@ public class PlayActivity extends AppCompatActivity {
 
 
     @Bind(R.id.video_view) VideoView gramVideoView;
-    ProgressDialog progDailog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,9 @@ public class PlayActivity extends AppCompatActivity {
         Uri uri = Uri.parse(getIntent().getExtras().getString("videoUrl"));
         String filename = getIntent().getExtras().getString("filename");
         File file = new File(Utils.getImageDirectory(this)+filename);
-        gramVideoView.setMediaController(null);
+        gramVideoView.setMediaController(new MediaController(this));
         if (!file.exists()) {
+            Toasty.normal(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
             gramVideoView.setVideoURI(uri);
         } else {
             gramVideoView.setVideoURI(Uri.fromFile(file));
@@ -42,7 +42,6 @@ public class PlayActivity extends AppCompatActivity {
         gramVideoView.seekTo(100);
         gramVideoView.requestFocus();
         gramVideoView.start();
-        Toasty.normal(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
 //        TastyToast.makeText(getApplicationContext(), "Loading...", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
 
         gramVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

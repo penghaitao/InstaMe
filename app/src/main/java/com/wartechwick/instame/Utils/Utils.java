@@ -26,6 +26,7 @@ import java.io.IOException;
  */
 public class Utils {
 
+    // TODO: 2017-05-26 distinguish request sources
     final public static int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
     public static void init(Context context) {
@@ -76,8 +77,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Uri contentUri = Uri.fromFile(file);
-        return contentUri;
+        return Uri.fromFile(file);
     }
 
     public static boolean verifyStoragePermissions(Activity context) {
