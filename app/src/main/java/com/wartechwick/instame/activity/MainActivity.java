@@ -283,10 +283,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
             app.logFirebaseEvent(filename, "SAVE");
-            File file = new File(Utils.getImageDirectory(this) + filename);
+            File file = new File(Utils.getImageDirectory() + filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
-                    Uri uri = Utils.saveImage(itemView, filename, this);
+                    Uri uri = Utils.saveImage(itemView, filename);
                     if (uri != null) {
                         Toasty.success(app, getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT, true).show();
 //                        TastyToast.makeText(app, getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (videoUrl == null) {
                 IntentUtils.shareImage(itemView, filename, this);
             } else {
-                File file = new File(Utils.getImageDirectory(this) + filename);
+                File file = new File(Utils.getImageDirectory() + filename);
                 if (!file.exists()) {
                     new SaveVideoTask(true).execute(videoUrl, filename);
                 } else {
@@ -574,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toasty.success(app, getResources().getString(R.string.permission_granted), Toast.LENGTH_LONG, true).show();
 //                    TastyToast.makeText(app, getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                    Utils.init(this);
+                    Utils.init();
                 } else {
                     Toasty.info(app, getResources().getString(R.string.need_permission), Toast.LENGTH_LONG, true).show();
 //                    TastyToast.makeText(app, getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);

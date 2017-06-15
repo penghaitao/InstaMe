@@ -1,6 +1,5 @@
 package com.wartechwick.instame.sync;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -250,8 +249,8 @@ public class HttpClient {
         return photos;
     }
 
-    public static Uri loadVideo(String videoUrl, String filename, Activity context) {
-        String path = Utils.getImageDirectory(context);
+    public static Uri loadVideo(String videoUrl, String filename) {
+        String path = Utils.getImageDirectory();
         File file = new File(path, filename);
         try {
             URL url = new URL(videoUrl);

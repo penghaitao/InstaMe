@@ -9,8 +9,8 @@ android {
         applicationId "com.wartechwick.instame"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 20170526
-        versionName "1.9.3"
+        versionCode 20170608
+        versionName "1.9.4"
     }
     buildTypes {
         release {

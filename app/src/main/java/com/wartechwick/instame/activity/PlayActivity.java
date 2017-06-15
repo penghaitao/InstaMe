@@ -31,7 +31,7 @@ public class PlayActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Uri uri = Uri.parse(getIntent().getExtras().getString("videoUrl"));
         String filename = getIntent().getExtras().getString("filename");
-        File file = new File(Utils.getImageDirectory(this)+filename);
+        File file = new File(Utils.getImageDirectory()+filename);
         gramVideoView.setMediaController(new MediaController(this));
         if (!file.exists()) {
             Toasty.normal(getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();

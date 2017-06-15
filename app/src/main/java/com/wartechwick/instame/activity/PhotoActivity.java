@@ -56,7 +56,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         if (Utils.verifyStoragePermissions(this)) {
             app.logFirebaseEvent(fileName, "SAVE");
-            Uri uri = Utils.saveImage(photoView, fileName, this);
+            Uri uri = Utils.saveImage(photoView, fileName);
             if (uri != null) {
                 Toasty.success(app, getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT, true).show();
 //                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.image_saved), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
@@ -71,7 +71,7 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toasty.success(app, getResources().getString(R.string.permission_granted), Toast.LENGTH_LONG, true).show();
 //                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.permission_granted), TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                    Utils.init(this);
+                    Utils.init();
                 } else {
                     Toasty.info(app, getResources().getString(R.string.need_permission), Toast.LENGTH_LONG, true).show();
 //                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.need_permission), TastyToast.LENGTH_LONG, TastyToast.INFO);

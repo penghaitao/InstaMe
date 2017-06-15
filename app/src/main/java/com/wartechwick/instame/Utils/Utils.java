@@ -2,7 +2,6 @@ package com.wartechwick.instame.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 
+import com.wartechwick.instame.App;
 import com.wartechwick.instame.R;
 
 import java.io.ByteArrayOutputStream;
@@ -29,8 +29,8 @@ public class Utils {
     // TODO: 2017-05-26 distinguish request sources
     final public static int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
-    public static void init(Context context) {
-        mkDirs(getImageDirectory(context));
+    public static void init() {
+        mkDirs(getImageDirectory());
     }
 
     public static void mkDirs(String dirPath) {
@@ -40,33 +40,33 @@ public class Utils {
         }
     }
 
-    public static String getImageDirectory(Context context) {
+    public static String getImageDirectory() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             return Environment.getExternalStorageDirectory() + "/InstantMe/";
         } else {
-            return context.getCacheDir() + "/InstantMe/";
+            return App.getContext().getCacheDir() + "/InstantMe/";
         }
     }
 
-    public static Uri saveImage(ImageView itemView, String filename, Context context) {
+    public static Uri saveImage(ImageView itemView, String filename) {
         BitmapDrawable bitmapDrawable = ((BitmapDrawable) itemView.getDrawable());
         if (bitmapDrawable != null) {
             Bitmap bitmap = bitmapDrawable.getBitmap();
-            Uri contentUri = getImageUri(bitmap, filename, context);
-            IntentUtils.savetoAlbum(contentUri, context);
+            Uri contentUri = getImageUri(bitmap, filename);
+            IntentUtils.savetoAlbum(contentUri);
             return contentUri;
         } else {
             return null;
         }
     }
 
-    public static Uri getImageUri(Bitmap bitmap, String filename, Context context) {
+    public static Uri getImageUri(Bitmap bitmap, String filename) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
         byte[] bitmapdata = bos.toByteArray();
 
         //write the bytes in file
-        String path = Utils.getImageDirectory(context);
+        String path = Utils.getImageDirectory();
         File file = new File(path, filename);
         try {
             file.createNewFile();
@@ -99,7 +99,7 @@ public class Utils {
                     REQUEST_CODE_ASK_PERMISSIONS);
             return false;
         } else {
-            Utils.init(context);
+            init();
             return true;
         }
 

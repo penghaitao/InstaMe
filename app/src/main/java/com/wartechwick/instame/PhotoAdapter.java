@@ -60,11 +60,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
         if (photo.getVideoUrl() != null) {
             holder.playView.setVisibility(View.VISIBLE);
-//            holder.shareButton.setVisibility(View.GONE);
             holder.wallPaperButton.setVisibility(View.GONE);
         } else {
             holder.playView.setVisibility(View.GONE);
-//            holder.shareButton.setVisibility(View.VISIBLE);
             holder.wallPaperButton.setVisibility(View.VISIBLE);
         }
 

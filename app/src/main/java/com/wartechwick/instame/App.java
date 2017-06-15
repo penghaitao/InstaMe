@@ -2,7 +2,9 @@ package com.wartechwick.instame;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -14,7 +16,7 @@ import com.wartechwick.instame.db.DatabaseHandler;
 public class App extends Application {
 
     public static boolean uiInForeground = false;
-    private Context sContext;
+    private static Context sContext;
     private FirebaseAnalytics mFirebaseAnalytics;
 //    private ClipboardManager clipboard;
 
@@ -30,8 +32,15 @@ public class App extends Application {
             Toast.makeText(this, "debug", Toast.LENGTH_SHORT).show();
             mFirebaseAnalytics.setAnalyticsCollectionEnabled(false);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
     }
 
+    public static Context getContext() {
+        return sContext;
+    }
 //    public ClipboardManager getClipboard() {
 //        if (clipboard == null) {
 //            clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);

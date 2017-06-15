@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.wartechwick.instame.App;
 import com.wartechwick.instame.activity.AboutActivity;
 import com.wartechwick.instame.activity.PhotoActivity;
 import com.wartechwick.instame.activity.PlayActivity;
@@ -22,11 +23,11 @@ public class IntentUtils {
 
     public static void shareImage(ImageView itemView, String filename, Context context) {
         Uri uri;
-        File file = new File(Utils.getImageDirectory(context)+filename);
+        File file = new File(Utils.getImageDirectory()+filename);
         if (file.exists()) {
             uri = Uri.fromFile(file);
         } else {
-            uri = Utils.saveImage(itemView, filename, context);
+            uri = Utils.saveImage(itemView, filename);
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("image/jpeg");
@@ -35,12 +36,12 @@ public class IntentUtils {
     }
 
     public static void setWallPaper(ImageView itemView, String filename, Context context) {
-        File file = new File(Utils.getImageDirectory(context)+filename);
+        File file = new File(Utils.getImageDirectory()+filename);
         Uri uri;
         if (file.exists()) {
             uri = Uri.fromFile(file);
         } else {
-            uri = Utils.saveImage(itemView, filename, context);
+            uri = Utils.saveImage(itemView, filename);
         }
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -78,8 +79,8 @@ public class IntentUtils {
     }
 
     public static Uri saveVideoOrShare(Activity context, String videoUrl, String filename, Boolean needShare) {
-        Uri uri = HttpClient.loadVideo(videoUrl, filename, context);
-        IntentUtils.savetoAlbum(uri, context);
+        Uri uri = HttpClient.loadVideo(videoUrl, filename);
+        IntentUtils.savetoAlbum(uri);
         if (needShare) {
             shareVideo(uri, context);
         }
@@ -108,10 +109,10 @@ public class IntentUtils {
         context.startActivity(Intent.createChooser(intent, "Share video"));
     }
 
-    public static void savetoAlbum(Uri contentUri, Context context) {
+    public static void savetoAlbum(Uri contentUri) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
+        App.getContext().sendBroadcast(mediaScanIntent);
     }
 
 //    public static void showSnackbar(int resId, Activity context, int duration) {
