@@ -40,4 +40,5 @@
     <string name="guideline">Скачать Руководство - Как пользоваться?</string>
     <string name="image_url_saved">Фото URL успешно сохранено</string>
     <string name="save_url_failed">Не удалось загрузить фотографии URL</string>
+    <string name="privacy">Политика конфиденциальности</string>
 </resources>

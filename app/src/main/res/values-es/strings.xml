@@ -48,4 +48,5 @@
     <string name="guideline">Guidelines - How to use?</string>
     <string name="image_url_saved">Image url has been saved, go to instantsave to see this photo :)</string>
     <string name="save_url_failed">Image url save failed</string>
+    <string name="privacy">Privacy Policy</string>
 </resources>

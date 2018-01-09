@@ -40,5 +40,6 @@
     <string name="guideline">Panduan - Cara pemakaian?</string>
     <string name="image_url_saved">Fotourltelahtersimpan</string>
     <string name="save_url_failed">Fotourlmendownloadgagal</string>
+    <string name="privacy">Kebijakan pribadi</string>
 
 </resources>

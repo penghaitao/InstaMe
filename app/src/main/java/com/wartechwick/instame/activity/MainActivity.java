@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int progressbarNum = 0;
     ClipboardManager.OnPrimaryClipChangedListener mPrimaryClipChangedListener = null;
 
-//    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,19 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
         setSupportActionBar(mToolBar);
         getActionBarTextView();
-//        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         introLogic();
         app = (App) getApplication();
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.abs_layout);
-//        Typeface myTypeface = Typeface.createFromAsset(getAssets(), "fonts/billabong.ttf");
-//        TextView textView = (TextView) findViewById(R.id.title);
-//        textView.setTypeface(myTypeface);
-//        textView.setGravity(Gravity.CENTER);
         photoList = new ArrayList<>();
-//        RecyclerView.ItemDecoration itemDecoration = new
-//                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
-//        recyclerView.addItemDecoration(itemDecoration);
         fab.setOnClickListener(this);
         gotoinstagramButton.setOnClickListener(this);
         setupAdapter();
@@ -121,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkClipboard();
 //        verifyStoragePermissions();
 
-//        MobileAds.initialize(getApplicationContext(), "ca-app-pub-7166408441889547~5644419913");//old
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-5499259334073863~8369213036");
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("6B159B11D34BA65D5D179B0F836FD60E").build();
         mAdView.loadAd(adRequest);
@@ -188,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     lastUrl = clipContent;
                     new LoadUrlTask().execute(clipContent);
-                    app.logFirebaseEvent("LOAD", "LOAD");
                 }
             }
         }
@@ -217,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (v.getId()) {
                     case R.id.author_avatar:
                     case R.id.author_name:
-                        app.logFirebaseEvent("NAME", "NAME");
                         IntentUtils.gotoAuthorUrl(photoList.get(position).getAuthorUrl(), MainActivity.this);
                         break;
                     case R.id.btn_save:
@@ -237,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.insta_image:
                         if (photoList.get(position).getVideoUrl() == null) {
-                            app.logFirebaseEvent("VIEW", "VIEW");
                             String fileName = getFileName(position);
                             PreferencesLoader loader = new PreferencesLoader(app);
                             if (loader.getBoolean(R.string.action_high_resolution, true)) {
@@ -246,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 IntentUtils.viewImage(MainActivity.this, photoList.get(position).getThumbnailUrl(), fileName);
                             }
                         } else {
-                            app.logFirebaseEvent("VIDEO", "VIDEO");
                             play(position);
                         }
                         break;
@@ -282,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
-            app.logFirebaseEvent(filename, "SAVE");
             File file = new File(Utils.getImageDirectory() + filename);
             if (videoUrl == null) {
                 if (!file.exists()) {
@@ -311,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Photo photo = photoList.get(position);
             String videoUrl = photo.getVideoUrl();
             String filename = getFileName(position);
-            app.logFirebaseEvent(filename, "SHARE");
             if (videoUrl == null) {
                 IntentUtils.shareImage(itemView, filename, this);
             } else {
@@ -329,7 +311,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void wallpaper(int position, ImageView itemView) {
         if (Utils.verifyStoragePermissions(this)) {
             String filename = getFileName(position);
-            app.logFirebaseEvent(filename, "WALLPAPER");
             IntentUtils.setWallPaper(itemView, filename, MainActivity.this);
         }
     }
@@ -343,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (position>= result.size()) {
             position = result.size()-1;
         }
-        app.logFirebaseEvent("DELETE", "DELETE");
         final Photo photo = result.get(position);
         if (photo.getUrl().equals(lastUrl)) {
             ClipData clipData = ClipData.newPlainText("", "");
@@ -514,7 +494,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case R.id.action_help:
-                app.logFirebaseEvent("HELP", "HELP");
                 String version = BuildConfig.VERSION_NAME;
                 Utils.showHelpMessage(this, getResources().getString(R.string.app_name) + " v" + version);
                 break;
@@ -554,7 +533,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void deleteAll() {
-        app.logFirebaseEvent("DELETE_ALL", "DELETE_ALL");
         photoList.clear();
         realm = app.getDBHandler().getRealmInstance();
         realm.executeTransaction(new Realm.Transaction() {
@@ -602,7 +580,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void gotoInstagram() {
-        app.logFirebaseEvent("GOTO", "GOTO");
         IntentUtils.gotoInstagram(this);
     }
 

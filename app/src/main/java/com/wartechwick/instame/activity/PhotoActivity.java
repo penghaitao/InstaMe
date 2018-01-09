@@ -55,7 +55,6 @@ public class PhotoActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (Utils.verifyStoragePermissions(this)) {
-            app.logFirebaseEvent(fileName, "SAVE");
             Uri uri = Utils.saveImage(photoView, fileName);
             if (uri != null) {
                 Toasty.success(app, getResources().getString(R.string.image_saved), Toast.LENGTH_SHORT, true).show();

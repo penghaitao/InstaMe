@@ -12,6 +12,12 @@
             android:key="Licence"
             android:selectable="true"
             android:title="@string/licence"/>
+        <Preference
+            android:enabled="true"
+            android:key="Privacy Policy"
+            android:selectable="true"
+            android:title="@string/privacy"
+            />
         <!--<Preference-->
             <!--android:enabled="true"-->
             <!--android:key="Guidelines"-->

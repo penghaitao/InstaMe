@@ -41,6 +41,7 @@
     <string name="share">Share this app</string>
     <string name="version">Version</string>
     <string name="licence">Licence</string>
+    <string name="privacy">Privacy Policy</string>
     <string name="sendto" translatable="false">mailto:wartechwick@gmail.com</string>
     <string name="mail_topic" translatable="false">InstantSave Feedback / Advice</string>
     <!--empty view-->

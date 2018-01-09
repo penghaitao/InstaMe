@@ -147,6 +147,7 @@ public class HttpClient {
 
     public static ArrayList<Photo> getPhotos(String clipContent) {
         ArrayList<Photo> photos = new ArrayList<>();
+//        clipContent = "https://www.instagram.com/p/BauWmIlDhKy/";
         String json = callAPI(Constant.API_BASE_URL+clipContent);
         Gson gson = new GsonBuilder()
                 .setExclusionStrategies(new ExclusionStrategy() {

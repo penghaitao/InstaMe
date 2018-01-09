@@ -41,4 +41,5 @@
     <string name="guideline">帮助</string>
     <string name="image_url_saved">图片链接保存成功，请到InstantSave中查看图片</string>
     <string name="save_url_failed">图片地址保存失败</string>
+    <string name="privacy">隐私政策</string>
 </resources>
